@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "fishsense-lite-python-pipeline"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.10"
+numpy = "^1.24.1"
+opencv-python = "^4.7.0"
+opencv-contrib-python = "^4.7.0"
+sherlock = { git = "https://github.com/KastnerRG/sherlock.git", branch = "feature/poetry", markers = "platform_machine == 'x86_64'" }
+matplotlib = "^3.6.3"
+tqdm = "^4.64.1"
+scikit-image = "^0.19.3"
+
+[tool.poetry.dev-dependencies]
+black = "^22.12.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
