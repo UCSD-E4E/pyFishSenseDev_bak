@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import csv
 from laser_parallax import compute_world_points_from_depths
+from array_read_write import read_camera_calibration
 import io
 import datetime
 import tarfile
@@ -58,7 +59,8 @@ def save_numpy_array(
 
 if __name__ == "__main__":
     # read camera calibration parameters from file
-    camera_params = None
+    camera_mat, _  = read_ca
+    pixel_pitch_mm = 1.5*1e-3
     (sensor_size_px, pixel_pitch_mm, focal_length_mm) = camera_params
 
     # load in undistorted laser images
@@ -74,6 +76,20 @@ if __name__ == "__main__":
     for file_name in file_list: 
         img = cv2.imread(file_name)
         # find checkerboard
+        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+        ret, corners = cv2.findChessboardCorners(img, (14,10), None)
+        objp = np.zeros((14*10,3), np.float32)
+        objp[:,:2] = np.mgrid[0:14,0:10].T.reshape(-1,2)
+        if ret: 
+            corners2 = cv2.cornerSubPix(img, corners, (11,11), (-1,-1), criteria)
+            # cv2.drawChessboardCorners(test_image, (14,10), corners2, ret)
+
+            # CALIBRATION PARAMETERS REQUIRED BEYOND HERE
+            # Find the rotation and translation vectors.
+            ret,rvecs, tvecs = cv2.solvePnP(objp, corners2, mtx, dist) 
+            # project 3D points to image plane
+            imgpts, jac = cv2.projectPoints(laser_dot, rvecs, tvecs, mtx, dist) # note: use the laser dot in this function
+
 
         # get checkerboard pose
 
