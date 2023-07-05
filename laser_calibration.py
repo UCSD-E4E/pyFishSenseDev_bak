@@ -1,0 +1,118 @@
+import cv2
+import numpy as np
+import csv
+from laser_parallax import compute_world_points_from_depths
+import io
+import datetime
+import tarfile
+import json
+
+def get_jacobian(
+        ps: np.ndarray, 
+        state: np.ndarray) -> np.ndarray:
+    n = ps.shape[0]
+    jacobian = np.zeros((n * 3, 5))
+    alpha = state[:3]
+    l = np.array([state[3], state[4], 0])
+    for i in range(n):
+        p = ps[i]
+        jacobian[3*i:3*i+3,:3] = np.eye(3) * np.linalg.norm(p - l)
+        jacobian[3*i:3*i+3,3:5] = (alpha[:,np.newaxis] @ (p - l)[np.newaxis,:2]) / np.linalg.norm(p - l)
+        jacobian[[3*i, 3*i+1],[3,4]] *= -1
+        jacobian[[3*i,3*i+1],[3,4]] += 1
+    return jacobian
+
+def get_residual(
+    points: np.ndarray,
+    state: np.ndarray) -> float:
+    laser_pos = np.array([state[3], state[4], 0])
+    laser_angle = state[:3]
+    est_points = np.linalg.norm(points - laser_pos, axis=1)[:, np.newaxis] * laser_angle + laser_pos
+    return points - est_points
+
+def gauss_newton_estimate_state(
+        ps: np.ndarray, 
+        init_state: np.ndarray, 
+        num_iterations: int =10) -> np.ndarray:
+    state = init_state
+    residual_norm_squared = []
+    for _ in range(num_iterations):
+        J = get_jacobian(ps, state)
+        rs = get_residual(ps, state).flatten()
+        residual_norm_squared.append(np.dot(rs,rs)) 
+        temp_state = state + np.linalg.pinv(J) @ rs
+        state = temp_state
+    return state, residual_norm_squared
+
+def save_numpy_array(
+        array: np.ndarray, file_name: str, file: tarfile.TarFile
+    ):
+    with io.BytesIO() as b:
+        np.save(b, array)
+        tarinfo = tarfile.TarInfo(file_name)
+        tarinfo.size = len(b.getvalue())
+        tarinfo.mtime = int(datetime.now().timestamp())
+        b.seek(0)
+        file.addfile(tarinfo, b)
+
+
+if __name__ == "__main__":
+    # read camera calibration parameters from file
+    camera_params = None
+    (sensor_size_px, pixel_pitch_mm, focal_length_mm) = camera_params
+
+    # load in undistorted laser images
+    img_coords = []
+    file_list = []
+    with open('5-8-23/data.csv','r',encoding='utf-8-sig') as csvfile: 
+        csv_reader = csv.DictReader(csvfile)
+        for row in csv_reader: 
+            file_list.append(row['name'])
+            img_coords.append([int(row['x']),int(row['y'])])
+
+    # determine calibration board pose for each photo
+    for file_name in file_list: 
+        img = cv2.imread(file_name)
+        # find checkerboard
+
+        # get checkerboard pose
+
+        # determine laser coordinate based on checkerboard pose
+
+
+    # find laser dot 3D coordinates for each photo
+    depths = []
+
+    # gather list of laser dot coordinates
+
+    # use list of laser dot coordinates to calibrate laser
+    ps = compute_world_points_from_depths(
+        camera_params=camera_params,
+        image_coordinates=(sensor_size_px/2 - img_coords),
+        depths=depths/100
+    )
+
+    state_init = np.array([0,0,1,-0.04,-0.11])
+    state, _ = gauss_newton_estimate_state(ps, state_init)
+
+    # save the states to a file
+    laser_axis = state[:3]
+    laser_pos = np.zeros((3,))
+    laser_pos[:2] = state[3:5]
+
+    file_path = "laser_calibration_data.tar"
+    metadata = {
+        "calibrated_date": str(datetime.now()),
+    }
+    with tarfile.open(file_path, "x:gz") as f:
+        with io.StringIO() as s:
+            json.dump(metadata, s, indent=True)
+            bytes = s.getvalue().encode("utf8")
+            with io.BytesIO(bytes) as b:
+                tarinfo = tarfile.TarInfo("metadata.json")
+                tarinfo.size = len(bytes)
+                tarinfo.mtime = int(datetime.now().timestamp())
+                f.addfile(tarinfo, b)
+
+        save_numpy_array(laser_axis, file_path, f)
+        save_numpy_array(laser_pos, file_path, f) 
