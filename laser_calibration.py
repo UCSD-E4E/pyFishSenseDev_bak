@@ -90,12 +90,11 @@ if __name__ == "__main__":
         corners2 = cv2.cornerSubPix(img, corners, (11,11), (-1,-1), criteria)
         # cv2.drawChessboardCorners(test_image, (14,10), corners2, ret)
 
-        # CALIBRATION PARAMETERS REQUIRED BEYOND HERE
         # Find the rotation and translation vectors from object frame to camera frame
         ret,rvecs, tvecs = cv2.solvePnP(objp, corners2, camera_mat, dist_coeffs) 
 
         # find the plane that the laser passes through
-        board_plane_points = cv2.projectPoints(corners2[[0,1,14]], rvecs, tvecs, camera_mat, dist_coeffs)
+        board_plane_points = cv2.projectPoints(corners2[[0,1,14]], rvecs, tvecs, camera_mat, dist_coeffs) * pixel_pitch_mm
         normal_vec = np.cross(board_plane_points[1] - board_plane_points[0], board_plane_points[2] - board_plane_points[0])
 
         # define laser ray assuming pinhole camera
