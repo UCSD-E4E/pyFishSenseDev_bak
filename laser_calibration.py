@@ -94,19 +94,18 @@ if __name__ == "__main__":
         # Find the rotation and translation vectors from object frame to camera frame
         ret,rvecs, tvecs = cv2.solvePnP(objp, corners2, camera_mat, dist_coeffs) 
 
-        # convert laser dot image dot coordinates to checkerboard object frame
-        checkerboard_x_vec = corners2[1] - corners2[0]
-        angle = np.arctan2(checkerboard_x_vec[1], checkerboard_x_vec[0])
-        rot = np.array([[np.cos(-angle), np.sin(-angle)],
-                        [-np.sin(-angle), np.cos(-angle)]])
-        square_length_px = np.linalg.norm(checkerboard_x_vec)
-       
-        laser_2d_obj = (rot @ (img_coords[i] - corners2[0])) / square_length_px
-        laser_3d_obj = np.zeros(3)
-        laser_3d_obj[:2] = laser_2d_obj
+        # find the plane that the laser passes through
+        board_plane_points = cv2.projectPoints(corners2[[0,1,14]], rvecs, tvecs, camera_mat, dist_coeffs)
+        normal_vec = np.cross(board_plane_points[1] - board_plane_points[0], board_plane_points[2] - board_plane_points[0])
 
-        # convert laser dot in checkerboard object frame to camera frame
-        laser_3d_cam = cv2.projectPoints(laser_3d_obj, rvecs, tvecs, camera_mat, dist_coeffs)
+        # define laser ray assuming pinhole camera
+        laser_ray = np.zeros(3)
+        laser_ray[:2] = (sensor_size_px/2 - img_coords[i]) * pixel_pitch_mm
+        laser_ray[3] = -focal_length_mm
+
+        # find scale factor such that the laser ray intersects with the plane
+        scale_factor = (normal_vec.T @ board_plane_points[0])/(normal_vec.T @ laser_ray) 
+        laser_3d_cam = laser_ray * scale_factor
         depths.append(laser_3d_cam[2])
 
     # use list of laser dot coordinates to calibrate laser
