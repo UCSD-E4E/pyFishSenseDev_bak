@@ -20,7 +20,10 @@ def read_camera_calibration(file_path: str):
     with tarfile.open(file_path, "r:gz") as f:
         calibration_matrix = read_numpy_array(f, "calibration_matrix.npy")
         distortion_coeffs = read_numpy_array(f, "distortion_coefficients.npy")
-        return calibration_matrix, distortion_coeffs
+    return calibration_matrix, distortion_coeffs
 
 def read_laser_calibration(file_path: str): 
-    pass
+    with tarfile.open(file_path, "r:gz") as f:
+        laser_position = read_numpy_array(f, "laser_position.npy")
+        laser_orientation = read_numpy_array(f, "laser_orientation.npy")
+    return laser_position, laser_orientation

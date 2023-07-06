@@ -59,9 +59,11 @@ def save_numpy_array(
 
 if __name__ == "__main__":
     # read camera calibration parameters from file
-    camera_mat, _  = read_ca
+    camera_mat, dist_coeffs  = read_camera_calibration('camera_calibration.tar')
     pixel_pitch_mm = 1.5*1e-3
-    (sensor_size_px, pixel_pitch_mm, focal_length_mm) = camera_params
+    focal_length_mm = camera_mat[0][0] * pixel_pitch_mm
+    sensor_size_px = np.array([4000,3000])
+    camera_params = (focal_length_mm, sensor_size_px[0], sensor_size_px[1], pixel_pitch_mm)
 
     # load in undistorted laser images
     img_coords = []
@@ -73,33 +75,39 @@ if __name__ == "__main__":
             img_coords.append([int(row['x']),int(row['y'])])
 
     # determine calibration board pose for each photo
-    for file_name in file_list: 
+    # find laser dot 3D coordinates for each photo
+    depths = []
+    for i,file_name in enumerate(file_list): 
         img = cv2.imread(file_name)
         # find checkerboard
         criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
         ret, corners = cv2.findChessboardCorners(img, (14,10), None)
         objp = np.zeros((14*10,3), np.float32)
         objp[:,:2] = np.mgrid[0:14,0:10].T.reshape(-1,2)
-        if ret: 
-            corners2 = cv2.cornerSubPix(img, corners, (11,11), (-1,-1), criteria)
-            # cv2.drawChessboardCorners(test_image, (14,10), corners2, ret)
+        if not ret:
+            continue
 
-            # CALIBRATION PARAMETERS REQUIRED BEYOND HERE
-            # Find the rotation and translation vectors.
-            ret,rvecs, tvecs = cv2.solvePnP(objp, corners2, mtx, dist) 
-            # project 3D points to image plane
-            imgpts, jac = cv2.projectPoints(laser_dot, rvecs, tvecs, mtx, dist) # note: use the laser dot in this function
+        corners2 = cv2.cornerSubPix(img, corners, (11,11), (-1,-1), criteria)
+        # cv2.drawChessboardCorners(test_image, (14,10), corners2, ret)
 
+        # CALIBRATION PARAMETERS REQUIRED BEYOND HERE
+        # Find the rotation and translation vectors from object frame to camera frame
+        ret,rvecs, tvecs = cv2.solvePnP(objp, corners2, camera_mat, dist_coeffs) 
 
-        # get checkerboard pose
+        # convert laser dot image dot coordinates to checkerboard object frame
+        checkerboard_x_vec = corners2[1] - corners2[0]
+        angle = np.arctan2(checkerboard_x_vec[1], checkerboard_x_vec[0])
+        rot = np.array([[np.cos(-angle), np.sin(-angle)],
+                        [-np.sin(-angle), np.cos(-angle)]])
+        square_length_px = np.linalg.norm(checkerboard_x_vec)
+       
+        laser_2d_obj = (rot @ (img_coords[i] - corners2[0])) / square_length_px
+        laser_3d_obj = np.zeros(3)
+        laser_3d_obj[:2] = laser_2d_obj
 
-        # determine laser coordinate based on checkerboard pose
-
-
-    # find laser dot 3D coordinates for each photo
-    depths = []
-
-    # gather list of laser dot coordinates
+        # convert laser dot in checkerboard object frame to camera frame
+        laser_3d_cam = cv2.projectPoints(laser_3d_obj, rvecs, tvecs, camera_mat, dist_coeffs)
+        depths.append(laser_3d_cam[2])
 
     # use list of laser dot coordinates to calibrate laser
     ps = compute_world_points_from_depths(
