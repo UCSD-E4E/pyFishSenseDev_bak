@@ -105,13 +105,13 @@ if __name__ == "__main__":
         # find scale factor such that the laser ray intersects with the plane
         scale_factor = (normal_vec.T @ board_plane_points[0])/(normal_vec.T @ laser_ray) 
         laser_3d_cam = laser_ray * scale_factor
-        depths.append(laser_3d_cam[2])
+        depths.append(laser_3d_cam[2] / 1000)
 
     # use list of laser dot coordinates to calibrate laser
     ps = compute_world_points_from_depths(
         camera_params=camera_params,
         image_coordinates=(sensor_size_px/2 - img_coords),
-        depths=depths/100
+        depths=depths
     )
 
     state_init = np.array([0,0,1,-0.04,-0.11])
