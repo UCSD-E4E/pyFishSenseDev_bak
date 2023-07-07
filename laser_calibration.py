@@ -7,6 +7,7 @@ import io
 import datetime
 import tarfile
 import json
+from constants import *
 
 def get_jacobian(
         ps: np.ndarray, 
@@ -60,10 +61,9 @@ def save_numpy_array(
 if __name__ == "__main__":
     # read camera calibration parameters from file
     camera_mat, dist_coeffs  = read_camera_calibration('camera_calibration.tar')
-    pixel_pitch_mm = 1.5*1e-3
-    focal_length_mm = camera_mat[0][0] * pixel_pitch_mm
+    focal_length_mm = camera_mat[0][0] * PIXEL_PITCH_MM
     sensor_size_px = np.array([4000,3000])
-    camera_params = (focal_length_mm, sensor_size_px[0], sensor_size_px[1], pixel_pitch_mm)
+    camera_params = (focal_length_mm, sensor_size_px[0], sensor_size_px[1], PIXEL_PITCH_MM)
 
     # load in undistorted laser images
     img_coords = []
@@ -94,17 +94,19 @@ if __name__ == "__main__":
         ret,rvecs, tvecs = cv2.solvePnP(objp, corners2, camera_mat, dist_coeffs) 
 
         # find the plane that the laser passes through
-        board_plane_points = cv2.projectPoints(corners2[[0,1,14]], rvecs, tvecs, camera_mat, dist_coeffs) * pixel_pitch_mm
+        board_plane_points = cv2.projectPoints(corners2[[0,1,14]], rvecs, tvecs, camera_mat, dist_coeffs) * PIXEL_PITCH_MM
         normal_vec = np.cross(board_plane_points[1] - board_plane_points[0], board_plane_points[2] - board_plane_points[0])
 
         # define laser ray assuming pinhole camera
         laser_ray = np.zeros(3)
-        laser_ray[:2] = (sensor_size_px/2 - img_coords[i]) * pixel_pitch_mm
+        laser_ray[:2] = (sensor_size_px/2 - img_coords[i]) * PIXEL_PITCH_MM 
         laser_ray[3] = -focal_length_mm
 
         # find scale factor such that the laser ray intersects with the plane
         scale_factor = (normal_vec.T @ board_plane_points[0])/(normal_vec.T @ laser_ray) 
         laser_3d_cam = laser_ray * scale_factor
+
+        # make sure the depths are in meters
         depths.append(laser_3d_cam[2] / 1000)
 
     # use list of laser dot coordinates to calibrate laser
