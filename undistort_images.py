@@ -4,6 +4,7 @@ import cv2
 from PIL import Image
 from enum import Enum
 from array_read_write import read_camera_calibration
+from constants import *
 
 class ImageType(Enum):
     LASER_IMG = {
@@ -11,8 +12,8 @@ class ImageType(Enum):
         'dst': os.fspath("./data/laser_jpgs_rectified")
     }
     FISH_IMG = {
-        'src': os.fspath("./fish_jpgs"),
-        'dst': os.fspath("./fish_jpgs_rectified")
+        'src': os.fspath("./data/fish_jpgs"),
+        'dst': os.fspath("./data/fish_jpgs_rectified")
     }
 
 def raw_to_png(img_type: ImageType):
@@ -23,15 +24,14 @@ def raw_to_png(img_type: ImageType):
     pass
     
 if __name__ == "__main__":
-    calib_file = os.fspath('calibration_data.tar')
+    calib_file = os.fspath('calibration-output.dat')
     calibration_mat, distortion_coeffs = read_camera_calibration(calib_file)
-    
     for image_type in (ImageType):
-        src_path = image_type['src'] 
-        dst_path = image_type['dst']
+        src_path = image_type.value['src'] 
+        dst_path = image_type.value['dst']
         filenames = glob.glob(os.path.join(src_path,'*.JPG'))
         for filename in filenames:
             img = cv2.imread(filename)
             undistorted_img = cv2.undistort(img, calibration_mat, distortion_coeffs)
-            cv2.imwrite(undistorted_img, os.path.join(dst_path, os.path.basename(filename)))
-            
+            cv2.imwrite(os.path.join(dst_path, os.path.basename(filename)), undistorted_img)
+
