@@ -56,7 +56,7 @@ for file in jpg_list:
     img = cv2.imread(curr_file)
     img_clone = img.copy()
 
-    cv2.namedWindow("Resized_Window", cv2.WINDOW_NORMAL)
+    cv2.namedWindow("Resized_Window", cv2.WINDOW_FULLSCREEN)
     cv2.imshow("Resized_Window", img)
     cv2.setMouseCallback("Resized_Window", click_event)
     while True:
@@ -101,6 +101,6 @@ for item in output_csv_dict.items():
     output_csv.append([item[0], *item[1][0], *item[1][1], *item[1][2]])
 
 # Write this 2d matrix into a csv file
-with open(os.fspath('./label_laser.csv'), 'w') as output_file:
+with open(os.fspath('./fish_data.csv'), 'w') as output_file:
     wr = csv.writer(output_file)
     wr.writerows(output_csv)
