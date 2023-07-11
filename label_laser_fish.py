@@ -50,7 +50,7 @@ def click_event(event, x, y, flags, param):
         cv2.imshow("Resized_Window", img_clone)
 
  
-jpg_list = glob.glob(os.fspath('data/laser_jpgs_rectified/*.JPG'))
+jpg_list = glob.glob(os.fspath('data/fish_jpgs_rectified/*.JPG'))
 for file in jpg_list:
     curr_file = file
     img = cv2.imread(curr_file)
@@ -98,7 +98,7 @@ print("all images done")
 output_csv = []
 output_csv.append(['name','laser.x','laser.y', 'head.x', 'head.y', 'tail.x', 'tail.y'])
 for item in output_csv_dict.items():
-    output_csv.append([item[0], *item[1], *item[2], *item[3]])
+    output_csv.append([item[0], *item[1][0], *item[1][1], *item[1][2]])
 
 # Write this 2d matrix into a csv file
 with open(os.fspath('./label_laser.csv'), 'w') as output_file:
