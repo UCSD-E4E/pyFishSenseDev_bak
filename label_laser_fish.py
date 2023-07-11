@@ -4,6 +4,7 @@ import os
 import glob
 import csv
 from copy import deepcopy
+from laser_dot_guess_correction import correct_laser_dot
 
 #This variable we use to store the pixel location
 refPt = []
@@ -30,9 +31,10 @@ def click_event(event, x, y, flags, param):
         if len(glob_list) == 0:
             img_clone = img.copy()
             strLaser = "Laser: " + strXY
-            glob_list.append((x,y))
-            cv2.putText(img_clone, strLaser, (x,y), font, 0.5, (0,255,0), 2)
-            cv2.circle(img_clone, (x,y), radius=3, color=(0,0,255), thickness=-1)
+            newX, newY = correct_laser_dot(coord=np.array([x,y]), img=img)
+            glob_list.append((newX,newY))
+            cv2.putText(img_clone, strLaser, (int(newX),int(newY)), font, 0.5, (0,255,0), 2)
+            cv2.circle(img_clone, (int(newX),int(newY)), radius=3, color=(0,0,255), thickness=-1)
             
         
         elif len(glob_list) == 1:

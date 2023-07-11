@@ -46,11 +46,11 @@ def main():
     
     # Get the map made from the csv file
 
-    file_map = read_csv("fish_data.csv")
+    file_map = read_csv("fish_data_4_12.csv")
 
     # Get the laser position and orientation from the laser calibration file
 
-    laser_position, laser_orientation = read_laser_calibration("laser-calibration-output-4-12.dat")
+    laser_position, laser_orientation = read_laser_calibration("laser-calibration-output-4-12-bot-float.dat")
     camera_mat, _ = read_camera_calibration('calibration-output.dat')
     focal_length_mm = camera_mat[0][0] * PIXEL_PITCH_MM
     sensor_size_px = np.array([4000,3000])
@@ -69,8 +69,8 @@ def main():
 
         # Read values from map
 
-        laser_x = int(file_map[file]["laser.x"])
-        laser_y = int(file_map[file]["laser.y"])
+        laser_x = float(file_map[file]["laser.x"])
+        laser_y = float(file_map[file]["laser.y"])
         snout_x = int(file_map[file]["head.x"])
         snout_y = int(file_map[file]["head.y"])
         fork_x = int(file_map[file]["tail.x"])
@@ -105,23 +105,24 @@ def main():
 
     masses = get_fish_masses(fish_lengths, species_list)
 
-    # reference = np.zeros(fish_lengths.shape)
-    # reference[:] = 0.31
-    # plt.plot(depths, fish_lengths, '.', label='Estimated fish lengths')
-    # plt.plot(depths, reference, '.', label='Actual fish lengths')
-    # plt.xlabel('Distance from camera (m)')
-    # plt.ylabel('Measured fish length (m)')
-    # plt.grid()
-    # plt.ylim(bottom=0, top=0.4)
-    # plt.legend()
-    # plt.show()
+    reference = np.zeros(fish_lengths.shape)
+    reference[:] = 0.31
+    plt.plot(depths, fish_lengths, '.', label='Estimated fish lengths')
+    plt.plot(depths, reference, label='Actual fish lengths')
+    plt.xlabel('Distance from camera (m)')
+    plt.ylabel('Measured fish length (m)')
+    plt.title('Estimated fish lengths from "perfect" laser dot selection')
+    plt.grid()
+    plt.ylim(bottom=0, top=0.4)
+    plt.legend()
+    plt.show()
     
     for i,file in enumerate(file_map):
         # output_csv.append(file, fish_lengths[i], masses[i], file_map[file]["species"])
         output_csv.append([file, fish_lengths[i], masses[i]])
 
     # Write this 2d matrix into a csv file
-    with open('./output.csv', 'w') as output_file:
+    with open('./output-bot-float.csv', 'w') as output_file:
         
         wr = csv.writer(output_file)
         wr.writerows(output_csv)
