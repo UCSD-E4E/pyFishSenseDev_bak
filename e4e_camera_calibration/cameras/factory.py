@@ -1,8 +1,9 @@
 from e4e_camera_calibration.cameras.camera import Camera
 from e4e_camera_calibration.cameras.qoocam import QoocamEgoStereoCamera
+from e4e_camera_calibration.cameras.olympus import OlympusTG6MonoCamera
 
 
-CAMERA_MAP = {"qoocam-ego": QoocamEgoStereoCamera}
+CAMERA_MAP = {"qoocam-ego": QoocamEgoStereoCamera, "Olympus-TG6": OlympusTG6MonoCamera}
 
 
 def str2camera(camera_name: str, **kwargs) -> Camera:

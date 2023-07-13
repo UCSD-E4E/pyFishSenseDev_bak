@@ -3,6 +3,8 @@ from argparse import ArgumentParser, Namespace
 
 from argument_parser_builder import ArgumentParserBuilder, ParsedArguments
 
+# Using ABC creates an abstract class
+
 
 class CliCommand(ABC):
     def __init__(self) -> None:

@@ -134,6 +134,7 @@ class Camera(ABC):
     def _write_image_file(self, image: np.ndarray, file_path: Path):
         raise NotImplementedError()
 
+    # Used in calibrated_stereo_camera.py to get the left and right images
     def __iter__(self):
         return self
 

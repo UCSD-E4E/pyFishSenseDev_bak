@@ -10,15 +10,19 @@ from e4e_camera_calibration.calibrators.calibrator import Calibrator
 from e4e_camera_calibration.calibrators.stereo_calibrator import StereoCalibrator
 from e4e_camera_calibration.commands.cli_command import CliCommand
 
+# This class is used to extract images from the two qoocam videos. Not needed for Olympus
+
 
 class ExtractCalibrationImagesCommand(CliCommand):
     def __init__(self):
         super().__init__()
 
+    # What to return if the user wants to know what the method does
     @property
     def help(self) -> str:
         return "Extracts calibration images from a specified video."
 
+    # The name of this specific subparser
     @property
     def name(self) -> str:
         return "extract-calibration-images"
@@ -39,6 +43,7 @@ class ExtractCalibrationImagesCommand(CliCommand):
         calibrator: Calibrator = None
         if camera.number_of_sensors == 2:
             calibrator = StereoCalibrator(camera)
+
         else:
             raise NotImplementedError()
 

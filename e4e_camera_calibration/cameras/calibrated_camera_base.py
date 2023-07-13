@@ -1,16 +1,46 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Iterable, Tuple
+from typing import Dict, Iterable, Tuple, List, Any
 import io
 import json
 import tarfile
+from tqdm import tqdm
+from multiprocessing import Pool, cpu_count
 
 import cv2
 import numpy as np
 
 from e4e_camera_calibration.cameras.camera import Camera
 from e4e_camera_calibration.cameras.stereo_camera import StereoCamera
+
+
+def do_work(args: Tuple[np.ndarray, int, int, float]) -> Tuple[List[np.ndarray], List[np.ndarray]]:
+    frame, rows, columns, square_size = args
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+
+    objp: np.ndarray = np.zeros((rows * columns, 3), np.float32)
+    objp[:, :2] = np.mgrid[0:rows, 0:columns].T.reshape(-1, 2)
+    objp = square_size * objp
+
+    gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+
+    # find the checkerboard
+    ret, corners = cv2.findChessboardCorners(gray, (rows, columns), None)
+
+    if ret:
+        # Convolution size used to improve corner detection. Don't make this too large.
+        conv_size = (11, 11)
+
+        # opencv can attempt to improve the checkerboard coordinates
+        corners = cv2.cornerSubPix(gray, corners, conv_size, (-1, -1), criteria)
+        # cv2.drawChessboardCorners(frame, (rows,columns), corners, ret)
+        # cv2.imshow('img', frame)
+        # k = cv2.waitKey(500)
+
+        return objp, corners
+    
+    return None, None
 
 
 class CalibratedCameraBase(Camera, ABC):
@@ -50,6 +80,8 @@ class CalibratedCameraBase(Camera, ABC):
     ):
         raise NotImplementedError()
 
+    # WHY ISN'T THIS THROWING AN ERROR????
+    # The output of this function is a 3-tuple, not a 2-tuple
     def _calibrate_camera(
         self,
         images: Iterable[np.ndarray],
@@ -79,25 +111,34 @@ class CalibratedCameraBase(Camera, ABC):
         # coordinates of the checkerboard in checkerboard world space.
         objpoints = []  # 3d point in real world space
 
-        for frame in images:
-            gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+        print(f"Starting finding checkerboard with {cpu_count()} threads.")
+        with Pool(processes=cpu_count()) as pool:
+            # frame, rows, columns, square_size = args
+            results = pool.map(do_work, [(img, rows, columns, square_size) for img in images])
+            results = [(objp, corners) for objp, corners in results if objp is not None and corners is not None]
 
-            # find the checkerboard
-            ret, corners = cv2.findChessboardCorners(gray, (rows, columns), None)
-
-            if ret:
-
-                # Convolution size used to improve corner detection. Don't make this too large.
-                conv_size = (11, 11)
-
-                # opencv can attempt to improve the checkerboard coordinates
-                corners = cv2.cornerSubPix(gray, corners, conv_size, (-1, -1), criteria)
-                # cv2.drawChessboardCorners(frame, (rows,columns), corners, ret)
-                # cv2.imshow('img', frame)
-                # k = cv2.waitKey(500)
-
+            for objp, corners in results:
                 objpoints.append(objp)
                 imgpoints.append(corners)
+
+        # for frame in tqdm(images):
+        #     gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+
+        #     # find the checkerboard
+        #     ret, corners = cv2.findChessboardCorners(gray, (rows, columns), None)
+
+        #     if ret:
+        #         # Convolution size used to improve corner detection. Don't make this too large.
+        #         conv_size = (11, 11)
+
+        #         # opencv can attempt to improve the checkerboard coordinates
+        #         corners = cv2.cornerSubPix(gray, corners, conv_size, (-1, -1), criteria)
+        #         # cv2.drawChessboardCorners(frame, (rows,columns), corners, ret)
+        #         # cv2.imshow('img', frame)
+        #         # k = cv2.waitKey(500)
+
+        #         objpoints.append(objp)
+        #         imgpoints.append(corners)
 
         (
             error,
@@ -112,6 +153,7 @@ class CalibratedCameraBase(Camera, ABC):
                 f"While calibrating {camera_name}, an error of {error} was above the maximum allowed error of {max_error}."
             )
 
+        # huhhh
         return error, camera_matrix, distortion_coefficients
 
     def load(self, path: str):
