@@ -1,9 +1,6 @@
 import numpy as np
 import rawpy
-import matplotlib.pyplot as plt
 import cv2 as cv
-import os
-import json
 from utils.h_functions import *
 
 
@@ -37,7 +34,7 @@ class imageProcessing():
         if self.processes['gammaCorrection'] == True:
             self.img = gammaCorrection(self.img, self.gamma_correction)
         if self.processes['greyWorldWB'] == True:
-            self.img = greyWorldWB(self.img)
+            self.img = greyWorldWB(self.img, self.colour)
         
         return self.img ,imageResize(self.img, self.resize_val)
 

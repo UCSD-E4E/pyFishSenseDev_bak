@@ -20,7 +20,7 @@ def demosaic(img):
     return img
 
 def denoising(img, val):
-    img = cv.blur(img, (5,5))
+    img = cv.blur(img, (val,val))
     return img
 
 def colorSpace(img, colour):
@@ -39,10 +39,11 @@ def toneCurve(img, params):
     mid = params[1]
     high = params[2]
 
-    img[img <= 21845] += np.asarray(low).astype(np.uint16)
-    img[(21845 < img) & (img < 43690)] += np.asarray(mid).astype(np.uint16)
-    img[img >= 43690] += np.asarray(high).astype(np.uint16)
-    img.astype(np.uint16)
+    img[img <= 21845] *= np.asarray(low).astype(np.uint16)
+    img[(21845 < img) & (img < 43690)] *= np.asarray(mid).astype(np.uint16)
+    img[img >= 43690] *= np.asarray(high).astype(np.uint16)
+
+     #img.astype(np.uint16)
     _, img = cv.threshold(img, 65535, 65535, cv.THRESH_TRUNC)
     return img
 
@@ -52,19 +53,23 @@ def gammaCorrection (img, gamma):
     buf = buf.astype(np.uint16)
     return buf
 
-def greyWorldWB(img):
-    b, g, r = cv.split(img)
-    r_avg = cv.mean(r)[0]
-    g_avg = cv.mean(g)[0]
-    b_avg = cv.mean(b)[0]
+def greyWorldWB(img, colour):
+    if colour == True: 
+        b, g, r = cv.split(img)
+        r_avg = cv.mean(r)[0]
+        g_avg = cv.mean(g)[0]
+        b_avg = cv.mean(b)[0]
 
-    kr = g_avg / r_avg
-    kg = 1
-    kb = g_avg / b_avg  
+        kr = g_avg / r_avg
+        kg = 1
+        kb = g_avg / b_avg  
 
-    r = cv.addWeighted(src1=r, alpha=kr, src2=0, beta=0, gamma=0)
-    g = cv.addWeighted(src1=g, alpha=kg, src2=0, beta=0, gamma=0)
-    b = cv.addWeighted(src1=b, alpha=kb, src2=0, beta=0, gamma=0)
+        r = cv.addWeighted(src1=r, alpha=kr, src2=0, beta=0, gamma=0)
+        g = cv.addWeighted(src1=g, alpha=kg, src2=0, beta=0, gamma=0)
+        b = cv.addWeighted(src1=b, alpha=kb, src2=0, beta=0, gamma=0)
 
-    balance_img = cv.merge([b, g, r])
+        balance_img = cv.merge([b, g, r])
+
+    else:
+        balance_img = img   
     return balance_img
