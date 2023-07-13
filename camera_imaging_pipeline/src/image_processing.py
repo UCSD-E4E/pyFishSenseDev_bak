@@ -3,7 +3,9 @@ import rawpy
 import cv2 as cv
 from utils.h_functions import *
 
-
+#this class allows the user to configure a image processing pipeline by adjusting
+#the paramters in the params1.json file. Creat a new .json for each desired 
+# configuration.
 class imageProcessing():
     def __init__(self, params):
         self.resize_val = params['resize_val']
@@ -15,6 +17,11 @@ class imageProcessing():
         self.processes = params['processes']
         self.img = None
 
+    #calls the relevant functions from h_functions.py for the processing pipeline,
+    #according to the parameters specified in params1.json.
+    #The method returns the image both in it's original size for further processing, 
+    #and it returns the resized data for displaying the processed image conveniently to 
+    #the user.
     def applyToImage(self, img_path):
         self.raw = rawpy.imread(img_path)
         self.img = self.raw.raw_image.copy()
@@ -38,12 +45,14 @@ class imageProcessing():
         
         return self.img ,imageResize(self.img, self.resize_val)
 
+    #method for returning the processed image.
     def getImage(self):
         if self.img.all() == None: 
             print('No image loaded')
         else:
             return self.img
 
+    #method for displaying the processed image to the user. 
     def showImage(self, img):
         if self.img.all() == None:
             print('No image loaded')
