@@ -28,7 +28,7 @@ def denoising(img, val):
 
 #provides the possibility to convert the image to greyscale
 def colorSpace(img, colour):
-    if colour == False:
+    if not colour:
         img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     return img
 
