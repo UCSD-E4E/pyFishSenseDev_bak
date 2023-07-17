@@ -6,6 +6,7 @@ from array_read_write import read_camera_calibration, write_laser_calibration
 import os
 from constants import *
 import matplotlib.pyplot as plt
+import argparse
 
 def get_jacobian(
         ps: np.ndarray, 
@@ -44,30 +45,43 @@ def gauss_newton_estimate_state(
         state = temp_state
     return state, residual_norm_squared
 
+def prep_args() -> argparse.ArgumentParser: 
+    parser = argparse.ArgumentParser(prog='laser_calibration',
+                                     description='Given a CSV of images file names and laser dot coordinates, generate laser calibration parameters'
+                                     )
+    parser.add_argument('-c', '--calib', help='Camera calibration file', dest='camera_calib_path', required=True)
+    parser.add_argument('-i', '--input', help='Input csv file', dest='csv_path', required=True)
+    parser.add_argument('-o', '--output', help='Output destination and file name', dest='dest_path', required=True)
+    return parser
+                                    
+
 if __name__ == "__main__":
+    parser = prep_args()
+    args = parser.parse_args()
+
     # read camera calibration parameters from file
-    camera_mat, dist_coeffs  = read_camera_calibration('calibration-output.dat')
+    camera_mat, dist_coeffs  = read_camera_calibration(args.camera_calib_path)
     focal_length_mm = camera_mat[0][0] * PIXEL_PITCH_MM
     sensor_size_px = np.array([4000,3000])
+    principal_point = camera_mat[:2,2]
     camera_params = (focal_length_mm, sensor_size_px[0], sensor_size_px[1], PIXEL_PITCH_MM)
 
     # load in undistorted laser images
     img_coords = []
     file_list = []
-    with open(os.fspath('./laser_data.csv'),'r',encoding='utf-8-sig') as csvfile: 
+    with open(args.csv_path,'r',encoding='utf-8-sig') as csvfile: 
         csv_reader = csv.DictReader(csvfile)
         for row in csv_reader: 
             file_list.append(row['name'])
-            img_coords.append([int(row['x']),int(row['y'])])
-
-    img_coords = np.array(img_coords)
+            img_coords.append([float(row['laser.x']),float(row['laser.y'])])
 
     # determine calibration board pose for each photo
     # find laser dot 3D coordinates for each photo
     depths = []
     objp = np.zeros((14*10,3), np.float32)
     objp[:,:2] = np.mgrid[0:14,0:10].T.reshape(-1,2)
-    distance_list = []
+    img_coords2 = []
+    # distance_list = []
     for i,file_name in enumerate(file_list): 
         img = cv2.imread(file_name)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -90,7 +104,7 @@ if __name__ == "__main__":
 
         # define laser ray assuming pinhole camera
         laser_ray = np.zeros(3)
-        laser_ray[:2] = (sensor_size_px/2 - img_coords[i]) * PIXEL_PITCH_MM * MM_TO_M
+        laser_ray[:2] = (principal_point - img_coords[i]) * PIXEL_PITCH_MM * MM_TO_M
         laser_ray[2] = -focal_length_mm * MM_TO_M
 
         # find scale factor such that the laser ray intersects with the plane
@@ -99,13 +113,15 @@ if __name__ == "__main__":
 
         print(f"Estimated depth of laser dot in {os.path.basename(file_name)} is {laser_3d_cam[2]}")
         depths.append(laser_3d_cam[2])
-        distance_list.append((int(os.path.splitext(os.path.basename(file_name))[0]),laser_3d_cam[2]*100))
+        img_coords2.append(img_coords[i])
+        # distance_list.append((int(os.path.splitext(os.path.basename(file_name))[0]),laser_3d_cam[2]*100))
 
     depths = np.array(depths)
+    img_coords2 = np.array(img_coords2)
     # use list of laser dot coordinates to calibrate laser
     ps = compute_world_points_from_depths(
         camera_params=camera_params,
-        image_coordinates=(sensor_size_px/2 - img_coords),
+        image_coordinates=(principal_point - img_coords2),
         depths=depths
     )
 
@@ -118,8 +134,7 @@ if __name__ == "__main__":
     laser_pos[:2] = state[3:5]
     print(f"Resulting axis and position: {laser_axis}, {laser_pos}")
 
-    file_path = "laser-calibration-output.dat"
-    write_laser_calibration(file_path, laser_axis, laser_pos)
+    write_laser_calibration(args.dest_path, laser_axis, laser_pos)
 
     # plot measured distance and estimated distance
     # measured_dist, actual_dist = list(zip(*distance_list))
