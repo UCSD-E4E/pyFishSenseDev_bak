@@ -13,7 +13,7 @@ The main processing functions are found in utils/processing_functions.py. Helper
     - 'tone_cruve': is not currently in use
     - 'gamma_correction': remap the initial intensity values according to the gamma function: https://docs.opencv.org/3.4/Basic_Linear_Transform_Tutorial_gamma.png
     - 'denoising': adjust the denoising factor which adjusts the intensity of blurring occuring due to convoling a low pass filter with the image data
-    - 'colour': select whether or not you would like to have a greyscale image or an RGB image
+    - 'colour': select whether or not you would like to have a grayscale image or an RGB image. If you would like a grayscale image, set this to false and 'colorSpace' in 'processes' to true, otherwise set to 'true'
     - 'processes': select which steps of the image processing pipeline you would like to apply to your sensor data 
 2. Unpack the params.json file.
 3. Pass the resulting dictionary during class initiation to imageProcessing().
