@@ -1,5 +1,5 @@
 # Camera Imaging Pipeline
-This repository contains a pyhton implementation of the camera imaging pipeline to process raw sensor data into a viewable image. The code is based on the paper corresponding to the following GitHub repository: [file:///C:/Users/Hamish/Zotero/storage/Q9C8Z22E/camera-pipeline.html.](https://karaimer.github.io/camera-pipeline/) .
+This repository contains a pyhton implementation of the camera imaging pipeline to process raw sensor data into a viewable image. The code is based on the paper corresponding to the following GitHub repository: https://karaimer.github.io/camera-pipeline/.
 
 
 ## Description - High Level
