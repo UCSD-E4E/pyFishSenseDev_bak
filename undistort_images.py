@@ -7,13 +7,13 @@ from array_read_write import read_camera_calibration
 from constants import *
 
 class ImageType(Enum):
-    LASER_IMG = {
-        'src': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/calibration"),
-        'dst': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/calibration-rectified")
-    }
+    # LASER_IMG = {
+    #     'src': os.fspath("./data/Red Laser Test"),
+    #     'dst': os.fspath("./data/Red Laser Test-rectified")
+    # }
     FISH_IMG = {
-        'src': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/fish"),
-        'dst': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/fish-rectified"),
+        'src': os.fspath("./data/Green Laser Test"),
+        'dst': os.fspath("./data/Green Laser Test-rectified"),
     }
 
 def raw_to_png(img_type: ImageType):
@@ -24,13 +24,14 @@ def raw_to_png(img_type: ImageType):
     pass
     
 if __name__ == "__main__":
-    calib_file = os.fspath('calibration-output.dat')
+    calib_file = os.fspath('fsl-01d-lens.dat')
     calibration_mat, distortion_coeffs = read_camera_calibration(calib_file)
     for image_type in (ImageType):
         src_path = image_type.value['src'] 
         dst_path = image_type.value['dst']
         filenames = glob.glob(os.path.join(src_path,'*.JPG'))
         for filename in filenames:
+
             img = cv2.imread(filename)
             undistorted_img = cv2.undistort(img, calibration_mat, distortion_coeffs)
             cv2.imwrite(os.path.join(dst_path, os.path.basename(filename)), undistorted_img)

@@ -31,10 +31,10 @@ def click_event(event, x, y, flags, param):
         if len(glob_list) == 0:
             img_clone = img.copy()
             strLaser = "Laser: " + strXY
-            newX, newY = correct_laser_dot(coord=np.array([x,y]), img=img)
-            glob_list.append((newX,newY))
-            cv2.putText(img_clone, strLaser, (int(newX),int(newY)), font, 0.5, (0,255,0), 2)
-            cv2.circle(img_clone, (int(newX),int(newY)), radius=3, color=(0,0,255), thickness=-1)
+            # newX, newY = correct_laser_dot(coord=np.array([x,y]), img=img)
+            glob_list.append((x,y))
+            cv2.putText(img_clone, strLaser, (int(x),int(y)), font, 0.5, (0,255,0), 2)
+            cv2.circle(img_clone, (int(x),int(y)), radius=3, color=(0,0,255), thickness=-1)
             
         
         elif len(glob_list) == 1:
@@ -52,13 +52,13 @@ def click_event(event, x, y, flags, param):
         cv2.imshow("Resized_Window", img_clone)
 
  
-jpg_list = glob.glob(os.fspath('data/fish_jpgs_rectified/*.JPG'))
+jpg_list = glob.glob(os.fspath('data/Green Laser Test-rectified/*.JPG'))
 for file in jpg_list:
     curr_file = file
     img = cv2.imread(curr_file)
     img_clone = img.copy()
 
-    cv2.namedWindow("Resized_Window", cv2.WINDOW_FULLSCREEN)
+    cv2.namedWindow("Resized_Window", cv2.WINDOW_NORMAL)
     cv2.imshow("Resized_Window", img)
     cv2.setMouseCallback("Resized_Window", click_event)
     while True:
@@ -103,6 +103,6 @@ for item in output_csv_dict.items():
     output_csv.append([item[0], *item[1][0], *item[1][1], *item[1][2]])
 
 # Write this 2d matrix into a csv file
-with open(os.fspath('./fish_data.csv'), 'w') as output_file:
+with open(os.fspath('./Green_Laser_Test_07_23.csv'), 'w') as output_file:
     wr = csv.writer(output_file)
     wr.writerows(output_csv)

@@ -31,15 +31,15 @@ def click_event(event, x, y, flags, param):
         if len(glob_list) == 0:
             img_clone = img.copy()
             strLaser = "Laser: " + strXY
-            newX,newY = correct_laser_dot(coord=np.array([x,y]),img=img)
-            glob_list.append((newX,newY))
-            cv2.putText(img_clone, strLaser, (int(newX),int(newY)), font, 0.5, (0,255,0), 2)
-            cv2.circle(img_clone, (int(newX), int(newY)), radius=3, color=(0,0,255), thickness=-1)
+            # newX,newY = correct_laser_dot(coord=np.array([x,y]),img=img)
+            glob_list.append((x,y))
+            cv2.putText(img_clone, strLaser, (int(x),int(y)), font, 0.5, (0,255,0), 2)
+            cv2.circle(img_clone, (int(x), int(y)), radius=3, color=(0,0,255), thickness=-1)
             
         cv2.imshow("Resized_Window", img_clone)
 
  
-jpg_list = glob.glob(os.fspath('data/laser_jpgs_rectified/*.JPG'))
+jpg_list = glob.glob(os.fspath('/home/viva/Fishsense/fishsense-lite-python-pipeline/data/FSL-01D Laser Calibration-rectified/*.JPG'))
 for file in jpg_list:
     curr_file = file
     img = cv2.imread(curr_file)
@@ -88,6 +88,6 @@ for item in output_csv_dict.items():
     output_csv.append([item[0], *item[1][0]])
 
 # Write this 2d matrix into a csv file
-with open(os.fspath('./laser_data_4_12_bot_float.csv'), 'w') as output_file:
+with open(os.fspath('./laser_calibration_7_13_23.csv'), 'w') as output_file:
     wr = csv.writer(output_file)
     wr.writerows(output_csv)

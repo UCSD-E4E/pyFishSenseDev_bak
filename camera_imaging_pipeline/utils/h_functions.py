@@ -13,6 +13,13 @@ def imageResize(img, resize_val):
 
 #linearize the raw sensor date
 def linearization(img):
+    img[img > 65000] = img.min()
+
+    # b,g,r = cv.split(img)
+    # b = ((b - b.min()) * (1/(b.max() - b.min()) * 65535)).astype('uint16')
+    # g = ((g - g.min()) * (1/(g.max() - g.min()) * 65535)).astype('uint16')
+    # r = ((r - r.min()) * (1/(r.max() - r.min()) * 65535)).astype('uint16')
+    # return np.dstack((b,g,r))
     img = ((img - img.min()) * (1/(img.max() - img.min()) * 65535)).astype('uint16')
     return img
 

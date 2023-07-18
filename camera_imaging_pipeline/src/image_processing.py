@@ -1,7 +1,7 @@
 import numpy as np
 import rawpy
 import cv2 as cv
-from utils.h_functions import *
+from camera_imaging_pipeline.utils.h_functions import *
 
 #this class allows the user to configure a image processing pipeline by adjusting
 #the paramters in the params1.json file. Creat a new .json for each desired 
@@ -25,11 +25,11 @@ class imageProcessing():
     def applyToImage(self, img_path):
         self.raw = rawpy.imread(img_path)
         self.img = self.raw.raw_image.copy()
-
         if self.processes['linearization'] == True:
             self.img = linearization(self.img)
         if self.processes['demosaic'] == True:
             self.img = demosaic(self.img)
+
         if self.processes['denoising'] == True:
             self.img = denoising(self.img, self.denoising_val)
         if self.processes['colorSpace'] == True:
@@ -42,7 +42,7 @@ class imageProcessing():
             self.img = gammaCorrection(self.img, self.gamma_correction)
         if self.processes['greyWorldWB'] == True:
             self.img = greyWorldWB(self.img, self.colour)
-        
+        # self.img = cv.convertScaleAbs(self.img)
         return self.img ,imageResize(self.img, self.resize_val)
 
     #method for returning the processed image.
