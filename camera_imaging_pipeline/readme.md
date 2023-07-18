@@ -21,6 +21,8 @@ The main processing functions are found in utils/processing_functions.py. Helper
 (5. To display the image, pass the return value from the applyToImage() method to cv2.showImage())
 
 ## Params.json file strcuture
+Paste the following into a params.json file if you would like to specify new parametrs for image processing: 
+
 {
     "resize_val": 25,
     "exposure_compensation": 1.8,
