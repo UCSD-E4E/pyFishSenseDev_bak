@@ -45,7 +45,6 @@ class imageProcessing():
         
         #self.img = scale_pixels(self.img)
         self.img = (self.img/256).astype('uint8')
-        print(np.max(self.img))
         return self.img ,imageResize(self.img, self.resize_val)
 
     #method for returning the processed image.

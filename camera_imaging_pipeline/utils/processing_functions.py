@@ -48,17 +48,24 @@ def exposureComp(img, val):
     return img
 
 #provides the ability to adjust the low, mid and high tones separately
-def toneCurve(img, params):
-    table = [None] * 255
-    for i in range(255):
+def toneCurve(img):
+    table = [None] * 256
+    for i in range(256):
         table[i] = 30
 
-    print(len(table))
+    pts = np.linspace(0 ,np.pi * 2, 255)
+    sin_pts = np.sin(pts)
+    sin_pts += 1
+    
+    x  = np.linspace(0,255,255).astype('uint8')
+    y = x * sin_pts
+
+    plt.plot(x, y)
+    plt.show()
+
     table = np.asarray(table).astype('uint8')
     img = np.asarray(img).astype('uint8')
     img = cv.LUT(img, table)
-
-    print(img)
     
     return img
 
