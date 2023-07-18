@@ -18,7 +18,7 @@ This repository contains a Python implementation of the Fishsense lite pipeline.
      * `-c` or `--calib` specifies the location of the lens calibration file generated from step 3. 
      * `-i` or `--input` specifies the location of the csv file from part 5. 
      * `-o` or `--output` specifies the location to save the generated laser calibration file.
-7. Label the fish images using `python label_laser_calibration.py`
+7. Label the fish images using `python label_laser_fish.py`
      * This script uses the following command line arguments: 
         * `-i` or `--input` specifies the input path which contains all *rectified* fish with laser images.
         * `-o` or `--output` specifies the location to save the generated csv file.
