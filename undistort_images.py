@@ -8,12 +8,12 @@ from constants import *
 
 class ImageType(Enum):
     LASER_IMG = {
-        'src': os.fspath("./data/laser_jpgs"),
-        'dst': os.fspath("./data/laser_jpgs_rectified")
+        'src': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/calibration"),
+        'dst': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/calibration-rectified")
     }
     FISH_IMG = {
-        'src': os.fspath("./data/fish_jpgs"),
-        'dst': os.fspath("./data/fish_jpgs_rectified")
+        'src': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/fish"),
+        'dst': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/fish-rectified"),
     }
 
 def raw_to_png(img_type: ImageType):

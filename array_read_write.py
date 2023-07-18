@@ -35,8 +35,6 @@ def write_laser_calibration(file_path: str, laser_axis: np.ndarray, laser_pos: n
         write_numpy_array(laser_axis, "laser_axis.npy", f)
         write_numpy_array(laser_pos, "laser_pos.npy", f) 
 
-
-
 def _read_numpy_array(buffer: io.BufferedReader):
     with io.BytesIO(buffer.read()) as b:
         return np.load(b)
@@ -52,6 +50,6 @@ def read_camera_calibration(file_path: str):
 
 def read_laser_calibration(file_path: str): 
     with tarfile.open(file_path, "r:gz") as f:
-        laser_position = read_numpy_array(f, "laser_position.npy")
-        laser_orientation = read_numpy_array(f, "laser_orientation.npy")
+        laser_position = read_numpy_array(f, "laser_pos.npy")
+        laser_orientation = read_numpy_array(f, "laser_axis.npy")
     return laser_position, laser_orientation

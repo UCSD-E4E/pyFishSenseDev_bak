@@ -5,6 +5,7 @@ from laser_parallax import compute_world_points_from_depths
 from array_read_write import read_camera_calibration, write_laser_calibration
 import os
 from constants import *
+import matplotlib.pyplot as plt
 
 def get_jacobian(
         ps: np.ndarray, 
@@ -66,6 +67,7 @@ if __name__ == "__main__":
     depths = []
     objp = np.zeros((14*10,3), np.float32)
     objp[:,:2] = np.mgrid[0:14,0:10].T.reshape(-1,2)
+    distance_list = []
     for i,file_name in enumerate(file_list): 
         img = cv2.imread(file_name)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -80,13 +82,10 @@ if __name__ == "__main__":
         # Find the rotation and translation vectors from object frame to camera frame
         ret, rvecs, tvecs = cv2.solvePnP(objp, corners2, camera_mat, dist_coeffs)
 
-        # print(rvecs, tvecs)
-        
         # find the plane that the laser passes through by converting checkerboard points to camera frame using the rotation and translation vectors
         rmat, _ = cv2.Rodrigues(rvecs)
         checkerboard_to_meter = CHECKERBOARD_SQUARE_SIZE_MM * MM_TO_M
         board_plane_points = ((rmat @ objp[[0,1,14]].T + tvecs) * checkerboard_to_meter).T
-        print(f"Estimated depth of checkerboard in {os.path.basename(file_name)} is {board_plane_points[0,2]}")
         normal_vec = np.cross(board_plane_points[1] - board_plane_points[0], board_plane_points[2] - board_plane_points[0])
 
         # define laser ray assuming pinhole camera
@@ -98,7 +97,9 @@ if __name__ == "__main__":
         scale_factor = (normal_vec.T @ board_plane_points[0])/(normal_vec.T @ laser_ray) 
         laser_3d_cam = laser_ray * scale_factor
 
+        print(f"Estimated depth of laser dot in {os.path.basename(file_name)} is {laser_3d_cam[2]}")
         depths.append(laser_3d_cam[2])
+        distance_list.append((int(os.path.splitext(os.path.basename(file_name))[0]),laser_3d_cam[2]*100))
 
     depths = np.array(depths)
     # use list of laser dot coordinates to calibrate laser
@@ -115,7 +116,28 @@ if __name__ == "__main__":
     laser_axis = state[:3]
     laser_pos = np.zeros((3,))
     laser_pos[:2] = state[3:5]
+    print(f"Resulting axis and position: {laser_axis}, {laser_pos}")
 
     file_path = "laser-calibration-output.dat"
     write_laser_calibration(file_path, laser_axis, laser_pos)
-    
+
+    # plot measured distance and estimated distance
+    # measured_dist, actual_dist = list(zip(*distance_list))
+    # measured_dist = np.array(measured_dist)
+    # actual_dist = np.array(actual_dist)
+    # plt.plot(measured_dist, measured_dist, '.', label='Tape Measure')
+    # plt.plot(measured_dist, actual_dist, '.', label='Checkerboard Pose')
+    # plt.xlabel('Distance of laser dot from camera with tape (cm)')
+    # plt.ylabel('Distance of laser dot from camera (cm)')
+    # plt.title('Difference between distances from measuring tape and checkerboard')
+    # plt.legend()
+    # plt.grid()
+    # plt.show()
+
+    # error = (measured_dist - actual_dist)/measured_dist
+    # plt.plot(measured_dist, error, '.')
+    # plt.xlabel('Measured distance from calibration board (cm)')
+    # plt.ylabel('Percentage error (%)')
+    # plt.title('Percentage error of estimated distance measurement w.r.t. measured distances')
+    # plt.grid()
+    # plt.show()
