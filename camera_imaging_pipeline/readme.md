@@ -1,12 +1,12 @@
-## Camera Imaging Pipeline
+# Camera Imaging Pipeline
 This repository contains a pyhton implementation of the camera imaging pipeline to process raw sensor data into a viewable image. The code is based on the paper corresponding to the following GitHub repository: file:///C:/Users/Hamish/Zotero/storage/Q9C8Z22E/camera-pipeline.html.
 
 
-# Description - High Level
+## Description - High Level
 An instance of the imageProcessing class is obtained by passing it a dictionaty with the desired processing parameters during initiation. Then the file path to a raw file (in our case .ORF files) is passed to the  applyToImage() method, which returns two values, the processed raw data in it's original shape, and a resized image for comfortable viewing of the processed image. Both return values are numpy arrays with 8-Bit integer elements.  
 The main processing functions are found in utils/processing_functions.py. Helper functions are found in utils/helpers.py and utils/analysis.py. The main class structure is found in src/image_processing.py.
 
-# Steps to use
+## Steps to use
 1. Edit (or create if not already available) the params.json file to select the steps of the pipeline you would like to apply to the raw sensor data, and adjust the parameters of each step to fit your needs. 
     - 'resize_val': resize the output image to a comfortable viewing size
     - 'exposure_compenastion': change the overall brightness of the image by scaling the intensity values. Values in the range from 0-1 will darken the     image, and values between 1 and 2 will brighten the image. 
