@@ -1,5 +1,10 @@
 import numpy as np
+from numpy.polynomial.polynomial import polyfit, polyval
 import cv2 as cv
+from .analysis import display_data
+from .helpers import clamp, scale_data
+import matplotlib.pyplot as plt
+
 
 #resize the image for convenient verification of the processed image by the user.
 def imageResize(img, resize_val):
@@ -13,7 +18,9 @@ def imageResize(img, resize_val):
 
 #linearize the raw sensor date
 def linearization(img):
-    img = ((img - img.min()) * (1/(img.max() - img.min()) * 65535)).astype('uint16')
+    #img = ((img - img.min()) * (1/(img.max() - img.min()) * 65535)).astype('uint16')
+    img = ((img - img.min()) * (1/(img.max() - img.min())))
+    img = scale_data(img, 16)
     return img
 
 #apply a demosaicing algorithm to create a 3 color channel RGB image 
@@ -35,29 +42,31 @@ def colorSpace(img, colour):
 #apply exposure compensation to the image, and handle any clipping that might be ocurring
 def exposureComp(img, val):
     img = img * val
-    img = img.astype(np.uint16)
     _, img = cv.threshold(img, 65535, 65535, cv.THRESH_TRUNC)
+    img = img.astype('uint16')
+
     return img
 
 #provides the ability to adjust the low, mid and high tones separately
 def toneCurve(img, params):
-    low = params[0]
-    mid = params[1]
-    high = params[2]
+    table = [None] * 255
+    for i in range(255):
+        table[i] = 30
 
-    img[img <= 21845] *= np.asarray(low).astype(np.uint16)
-    img[(21845 < img) & (img < 43690)] *= np.asarray(mid).astype(np.uint16)
-    img[img >= 43690] *= np.asarray(high).astype(np.uint16)
+    print(len(table))
+    table = np.asarray(table).astype('uint8')
+    img = np.asarray(img).astype('uint8')
+    img = cv.LUT(img, table)
 
-     #img.astype(np.uint16)
-    _, img = cv.threshold(img, 65535, 65535, cv.THRESH_TRUNC)
+    print(img)
+    
     return img
 
 #maps the channel value to new values according to the gamma function
 def gammaCorrection (img, gamma):
-    img_buf = (img)/65535
-    buf = np.power(img_buf, gamma) * 65535
-    buf = buf.astype(np.uint16)
+    img_buf = (img)/img.max()
+    buf = np.power(img_buf, gamma) * img.max()#65535
+    #buf = buf.astype(np.uint16)
     return buf
 
 #provides white balance adjustments to the image based on the grey world algorithm
@@ -81,3 +90,19 @@ def greyWorldWB(img, colour):
     else:
         balance_img = img   
     return balance_img
+
+# def scale_pixels(img):
+#     b, g , r = cv.split(img)
+#     b = np.subtract(b, min(b.flatten(order='C')))
+#     b = 255*(b/max(b.flatten(order='C'))).astype('uint8')
+
+#     g = np.subtract(g, np.full_like(g, min(g.flatten(order='C'))))
+#     g = 255*(g/max(g.flatten(order='C'))).astype('uint8')
+
+#     r = np.subtract(r, np.full_like(r, min(r.flatten(order='C'))))
+#     r = 255*(r/max(r.flatten(order='C'))).astype('uint8')
+
+#     img = cv.merge([b, g, r])
+#     print(img.min())
+#     print(img.max())
+#     return img

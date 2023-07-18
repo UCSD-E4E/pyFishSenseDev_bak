@@ -1,7 +1,7 @@
 import numpy as np
 import rawpy
 import cv2 as cv
-from utils.h_functions import *
+from ..utils.processing_functions import *
 
 #this class allows the user to configure a image processing pipeline by adjusting
 #the paramters in the params1.json file. Creat a new .json for each desired 
@@ -43,6 +43,9 @@ class imageProcessing():
         if self.processes['greyWorldWB'] == True:
             self.img = greyWorldWB(self.img, self.colour)
         
+        #self.img = scale_pixels(self.img)
+        self.img = (self.img/256).astype('uint8')
+        print(np.max(self.img))
         return self.img ,imageResize(self.img, self.resize_val)
 
     #method for returning the processed image.
