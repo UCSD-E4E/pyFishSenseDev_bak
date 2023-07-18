@@ -19,3 +19,23 @@ The main processing functions are found in utils/processing_functions.py. Helper
 3. Pass the resulting dictionary during class initiation to imageProcessing().
 4. Pass the file path of the raw file you would like to process to the applyToImage() method. This returns two values, the first one being the processed sensor data in it's original shape. The second one being the reshaped image for comfortable viewing. 
 (5. To display the image, pass the return value from the applyToImage() method to cv2.showImage())
+
+## Params.json file strcuture
+{
+    "resize_val": 25,
+    "exposure_compensation": 1.8,
+    "tone_curve": [2, 1, 1], 
+    "gamma_correction": 1,
+    "denoising": 5,
+    "colour": true, 
+    "processes":{
+      "linearization": true, 
+      "demosaic": true, 
+      "denoising": false, 
+      "colorSpace": false, 
+      "exposureComp": true, 
+      "toneCurve": false, 
+      "gammaCorrection": false, 
+      "greyWorldWB": true
+    }
+  }
