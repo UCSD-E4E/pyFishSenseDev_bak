@@ -7,13 +7,17 @@ from array_read_write import read_camera_calibration
 from constants import *
 
 class ImageType(Enum):
+    # BOX_IMG = {
+    #     'src': os.fspath("/Users/kylehu/Library/Application Support/E4EDataManagement/2023.07.Fishsense.Nathan's House/ED-00/FSL-01D Box"),
+    #     'dst': os.fspath("/Users/kylehu/Desktop/code/e4e/fishsense/fishsense-lite-python-pipeline/data-7-13/box-rectified")
+    # }
+    # FISH_IMG = {
+    #     'src': os.fspath("/Users/kylehu/Library/Application Support/E4EDataManagement/2023.07.Fishsense.La Jolla Kelp Beds/ED-00/Green Laser Test"),
+    #     'dst': os.fspath("/Users/kylehu/Desktop/code/e4e/fishsense/fishsense-lite-python-pipeline/data-7-17/fred-rectified"),
+    # }
     LASER_IMG = {
-        'src': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/calibration"),
-        'dst': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/calibration-rectified")
-    }
-    FISH_IMG = {
-        'src': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/fish"),
-        'dst': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/fish-rectified"),
+        'src': os.fspath("/Users/kylehu/Library/Application Support/E4EDataManagement/2023.07.Fishsense.Nathan's House/ED-00/TG6 Green Laser Calibration"),
+        'dst': os.fspath("/Users/kylehu/Desktop/code/e4e/fishsense/fishsense-lite-python-pipeline/data-7-17/green-laser-rectified"),
     }
 
 def raw_to_png(img_type: ImageType):
@@ -24,7 +28,7 @@ def raw_to_png(img_type: ImageType):
     pass
     
 if __name__ == "__main__":
-    calib_file = os.fspath('calibration-output.dat')
+    calib_file = os.fspath('/Users/kylehu/Desktop/code/e4e/fishsense/fishsense-lite-python-pipeline/trials/9/nathan-lens.dat')
     calibration_mat, distortion_coeffs = read_camera_calibration(calib_file)
     for image_type in (ImageType):
         src_path = image_type.value['src'] 
