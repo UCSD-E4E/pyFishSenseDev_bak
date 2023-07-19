@@ -1,5 +1,5 @@
 # Camera Imaging Pipeline
-This repository contains a pyhton implementation of the camera imaging pipeline to process raw sensor data into a viewable image. The code is based on the paper corresponding to the following GitHub repository: file:///C:/Users/Hamish/Zotero/storage/Q9C8Z22E/camera-pipeline.html.
+This repository contains a pyhton implementation of the camera imaging pipeline to process raw sensor data into a viewable image. The code is based on the paper corresponding to the following GitHub repository: https://karaimer.github.io/camera-pipeline/.
 
 
 ## Description - High Level
@@ -13,11 +13,35 @@ The main processing functions are found in utils/processing_functions.py. Helper
     - 'tone_cruve': is not currently in use
     - 'gamma_correction': remap the initial intensity values according to the gamma function: https://docs.opencv.org/3.4/Basic_Linear_Transform_Tutorial_gamma.png
     - 'denoising': adjust the denoising factor which adjusts the intensity of blurring occuring due to convoling a low pass filter with the image data
-    - 'colour': select whether or not you would like to have a greyscale image or an RGB image
+    - 'colour': select whether or not you would like to have a grayscale image or an RGB image. If you would like a grayscale image, set this to false and 'colorSpace' in 'processes' to true, otherwise set to 'true'
     - 'processes': select which steps of the image processing pipeline you would like to apply to your sensor data 
 2. Unpack the params.json file with the json module.
 3. Pass the resulting dictionary during class initiation to imageProcessing().
 4. Pass the file path of the raw file you would like to process to the applyToImage() method. This returns two values, the first one being the processed sensor data in it's original shape. The second one being the reshaped image for comfortable viewing. 
 (5. To display the image, pass the return value from the applyToImage() method to cv2.showImage())
 
+<<<<<<< HEAD
 You can find an example of how to use the imageProcessing class in cip_example.py.
+=======
+## Params.json file strcuture
+Paste the following into a params.json file if you would like to specify new parametrs for image processing: 
+
+{
+    "resize_val": 25,
+    "exposure_compensation": 1.8,
+    "tone_curve": [2, 1, 1], 
+    "gamma_correction": 1,
+    "denoising": 5,
+    "colour": true, 
+    "processes":{
+      "linearization": true, 
+      "demosaic": true, 
+      "denoising": false, 
+      "colorSpace": false, 
+      "exposureComp": true, 
+      "toneCurve": false, 
+      "gammaCorrection": false, 
+      "greyWorldWB": true
+    }
+  }
+>>>>>>> 527ac69d900affb07b4af6eef036d357832241b5
