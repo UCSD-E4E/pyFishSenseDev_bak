@@ -3,6 +3,7 @@ import numpy as np
 import os
 import glob
 import csv
+from camera_imaging_pipeline.utils.processing_functions import imageResize
 
 #This variable we use to store the pixel location
 refPt = []
@@ -27,11 +28,12 @@ def click_event(event, x, y, flags, param):
         cv2.imshow("image", img_clone)
 
  
-jpg_list = glob.glob(os.fspath('data/laser_jpgs_rectified/*.JPG'))
+jpg_list = glob.glob(os.fspath('data\\7_23_nathans_pool\FSL-01F_Fred\\P7130377.jpg'))
 for file in jpg_list:
     curr_file = file
     img = cv2.imread(curr_file)
-    img_clone = img.copy()
+    img = imageResize(img, 25)
+    #img_clone = img.copy()
     cv2.imshow("image", img)
     cv2.setMouseCallback("image", click_event)
     if cv2.waitKey(0) == ord('q'):

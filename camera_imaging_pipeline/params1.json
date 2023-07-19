@@ -4,17 +4,15 @@
     "tone_curve": [2, 1, 1], 
     "gamma_correction": 1,
     "denoising": 5,
-    "colour": true, 
+    "colour": false, 
     "processes":{
       "linearization": true, 
       "demosaic": true, 
       "denoising": false, 
-      "colorSpace": false, 
-      "exposureComp": true, 
+      "colorSpace": true, 
+      "exposureComp": false, 
       "toneCurve": false, 
       "gammaCorrection": false, 
-      "greyWorldWB": true
+      "greyWorldWB": false
     }
   }
-
-  
