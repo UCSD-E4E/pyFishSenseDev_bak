@@ -10,7 +10,7 @@
       "demosaic": true, 
       "denoising": false, 
       "colorSpace": true, 
-      "exposureComp": false, 
+      "exposureComp": true, 
       "toneCurve": false, 
       "gammaCorrection": false, 
       "greyWorldWB": false
