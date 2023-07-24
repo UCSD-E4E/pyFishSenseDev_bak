@@ -18,7 +18,6 @@ def imageResize(img, resize_val):
 
 #linearize the raw sensor date
 def linearization(img):
-    #img = ((img - img.min()) * (1/(img.max() - img.min()) * 65535)).astype('uint16')
     img = ((img - img.min()) * (1/(img.max() - img.min())))
     img = scale_data(img, 16)
     return img
