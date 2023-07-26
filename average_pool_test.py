@@ -38,7 +38,7 @@ for filepath in files[7:]:
     processed_image, _ = processor.applyToImage(filepath.as_posix(), params)
     
     # print(len(np.shape(processed_image)))
-    # masked_image = get_masked_image_matrix(laser_path, calibration_path, processed_image)
+    masked_image = get_masked_image_matrix(laser_path, calibration_path, processed_image)
 
     # pooled = mean_pooling((2,2), masked_image).astype(np.uint8)
     # pooled = mean_pooling((2,2), pooled).astype(np.uint8)
@@ -48,7 +48,7 @@ for filepath in files[7:]:
     # pooled[max_index[0]][max_index[1]] = 255
 
     cv2.namedWindow("Zoomed", cv2.WINDOW_NORMAL)
-    cv2.imshow("Zoomed", processed_image)
+    cv2.imshow("Zoomed", masked_image)
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
