@@ -43,6 +43,15 @@ def return_line(laser_path: Path, calibration_path: Path):
 
     return get_line(first_2d_tup, second_2d_tup)
 
+def get_vanishing_point_2d(laser_path: Path, calibration_path: Path):
+    laser_position, laser_orientation = read_laser_calibration(laser_path.as_posix())
+    calibration_matrix, _ = read_camera_calibration(calibration_path.as_posix())
+    
+    vanishing_point = laser_position + 10000 * laser_orientation
+    return get_2d_from_3d(calibration_matrix, vanishing_point)
+
+
+
 def view_line(laser_path: Path, calibration_path: Path, data_path: Path):
 
     for file in os.listdir(data_path.as_posix()):

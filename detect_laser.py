@@ -8,7 +8,11 @@ import json
 
 from camera_imaging_pipeline.src.image_processing import imageProcessing
 
-from detect_laser_line import return_line
+from detect_laser_line import return_line, get_vanishing_point_2d
+
+def get_vanishing_point(laser_path: Path, calibration_path: Path):
+
+    return get_vanishing_point_2d(laser_path, calibration_path)
 
 def get_masked_image_matrix(laser_path: Path, 
                          calibration_path:Path, img: np.ndarray):
