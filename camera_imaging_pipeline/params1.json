@@ -1,18 +1,18 @@
 {
     "resize_val": 25,
-    "exposure_compensation": 0.5,
+    "exposure_compensation": 0.7,
     "tone_curve": [2, 1, 1], 
     "gamma_correction": 1,
     "denoising": 10,
-    "colour": false, 
+    "colour": true, 
     "processes":{
       "linearization": true, 
       "demosaic": true, 
-      "denoising": true, 
+      "denoising": false, 
       "colorSpace": false, 
       "exposureComp": true, 
       "toneCurve": false, 
-      "gammaCorrection": false, 
+      "gammaCorrection": 1.2, 
       "greyWorldWB": true
     }
   }
