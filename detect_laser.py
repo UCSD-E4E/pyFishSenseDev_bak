@@ -22,6 +22,7 @@ def get_masked_image_matrix(laser_path: Path,
         sys.exit(1)
 
     if len(np.shape(img)) == 3:
+        print('3')
         # Get the line
         img_clone = img.copy()
         start_point, end_point = return_line(laser_path, calibration_path)
@@ -35,6 +36,7 @@ def get_masked_image_matrix(laser_path: Path,
         return masked_image
 
     elif (len(np.shape(img)) == 2):
+        print(np.max(img))
         img_clone = img.copy()
         start_point, end_point = return_line(laser_path, calibration_path)
         cv2.line(img_clone, start_point, end_point, color=0, thickness=75)
@@ -120,8 +122,8 @@ def display_masked_image(laser_path: Path,
 
         # masked_rgb = cv2.demosaicing(masked_image, cv2.COLOR_BAYER_GB2BGR)
         params = json.load(open(params_path))
-        processor = imageProcessing(params)
-        masked_rgb, _ = processor.applyToImage(masked_image)
+        processor = imageProcessing()
+        masked_rgb, _ = processor.applyToImage(masked_image, params)
 
         for cnt in contours:
             cv2.drawContours(masked_rgb,[cnt],0,(0,0,65535),thickness=10)
@@ -142,8 +144,8 @@ def display_detection(laser_path: Path,
         contours = detect_laser_raw(masked_image)   
 
         params = json.load(open(params_path))
-        processor = imageProcessing(params)
-        processed_image, _ = processor.applyToImage(filepath.as_posix())
+        processor = imageProcessing()
+        processed_image, _ = processor.applyToImage(filepath.as_posix(), params)
         
         # processed_image = processed_image.astype(np.uint8)
         for cnt in contours:
@@ -160,18 +162,18 @@ def display_detection(laser_path: Path,
         cv2.destroyAllWindows()
 
     
-# laser_path = Path("/home/viva/Fishsense/fishsense-lite-python-pipeline/laser-calibration-output-4-12-bot.dat")
-# calibration_path = Path("/home/viva/Fishsense/fishsense-lite-python-pipeline/fsl-01d-lens.dat")
-# data_path = Path("/home/viva/Fishsense/fishsense-lite-python-pipeline/data/FSL-01D Fred")
+laser_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/laser-calibration-output-7-13.dat")
+calibration_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/fsl-01d-lens.dat")
+data_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/data/7_23_nathans_pool/FSL-01D Fred")
 
-# for file in os.listdir(data_path.as_posix()):
+for file in os.listdir(data_path.as_posix()):
 
-#     filepath = data_path.joinpath(file)
-#     if filepath.suffix != ".ORF":
-#         continue
+    filepath = data_path.joinpath(file)
+    if filepath.suffix != ".ORF":
+        continue
     
-#     params_path = Path('/home/viva/Fishsense/fishsense-lite-python-pipeline/camera_imaging_pipeline/params1.json')
+    params_path = Path('C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/camera_imaging_pipeline/params1.json')
 
-#     print(f"Processing {file}")
-#     # display_detection(laser_path, calibration_path, filepath, params_path)
-#     display_masked_image(laser_path, calibration_path, filepath, True, params_path)
+    print(f"Processing {file}")
+    # display_detection(laser_path, calibration_path, filepath, params_path)
+    display_masked_image(laser_path, calibration_path, filepath, True, params_path)

@@ -26,7 +26,7 @@ class imageProcessing():
         processes = params['processes']
         if type(img_path) != np.ndarray:
             
-            img = rawpy.imread(img_path).raw_image.copy()
+            img = rawpy.imread(img_path.as_posix()).raw_image.copy()
 
             if processes['linearization'] == True:
                 print("Linearizing")
@@ -55,6 +55,7 @@ class imageProcessing():
             
             #img = scale_pixels(img)
             img = (img/256).astype('uint8')
+            print(img.max())
             return img ,imageResize(img, resize_val)
 
         else: 
@@ -78,7 +79,7 @@ class imageProcessing():
                 img = greyWorldWB(img, colour)
             
             #img = scale_pixels(img)
-            img = (img/256).astype('uint8')
+            #img = (img/256).astype('uint8')
             return img ,imageResize(img, resize_val)
 
     # #method for returning the processed image.

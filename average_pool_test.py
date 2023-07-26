@@ -20,11 +20,11 @@ def mean_pooling(kernel_shape, img):
 
     return res
 
-laser_path = Path("/home/viva/Fishsense/fishsense-lite-python-pipeline/laser-calibration-output-7-13.dat")
-calibration_path = Path("/home/viva/Fishsense/fishsense-lite-python-pipeline/fsl-01d-lens.dat")
-data_path = Path("/home/viva/Fishsense/fishsense-lite-python-pipeline/data/FSL-01D Fred")
+laser_path = Path("C:/Users/Hamish/Documents/E4E\Fishsense/fishsense-lite-python-pipeline/files/laser-calibration-output-7-13.dat")
+calibration_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/fsl-01d-lens.dat")
+data_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/data/7_23_nathans_pool/FSL-01F_Fred")
 
-params_path = Path('/home/viva/Fishsense/fishsense-lite-python-pipeline/camera_imaging_pipeline/params1.json')
+params_path = Path('C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/camera_imaging_pipeline/params1.json')
 with open(params_path, 'r', encoding='ascii') as handle:
     params = json.load(handle)
 
@@ -32,12 +32,13 @@ files = list(data_path.glob('*.ORF'))
 
 processor = imageProcessing()
 
-for filepath in files[7:]:
+for filepath in sorted(files):
     print(f"Processing {filepath.stem}")
 
     processed_image, _ = processor.applyToImage(filepath.as_posix(), params)
     
-    # print(len(np.shape(processed_image)))
+    print(len(np.shape(processed_image)))
+
     masked_image = get_masked_image_matrix(laser_path, calibration_path, processed_image)
 
     # pooled = mean_pooling((2,2), masked_image).astype(np.uint8)
@@ -45,7 +46,8 @@ for filepath in files[7:]:
 
     # max_index = np.unravel_index(pooled.argmax(), pooled.shape)
 
-    # pooled[max_index[0]][max_index[1]] = 255
+    # #pooled[max_index[0]][max_index[1]] = 0
+    # cv2.circle(pooled, (max_index[0],max_index[1]), 100, 255, cv2.FILLED, cv2.LINE_AA)
 
     cv2.namedWindow("Zoomed", cv2.WINDOW_NORMAL)
     cv2.imshow("Zoomed", masked_image)
