@@ -81,6 +81,7 @@ if __name__ == "__main__":
     objp = np.zeros((14*10,3), np.float32)
     objp[:,:2] = np.mgrid[0:14,0:10].T.reshape(-1,2)
     img_coords2 = []
+    empty_dist_coeffs = np.zeros(dist_coeffs.shape)
     # distance_list = []
     for i,file_name in enumerate(file_list): 
         img = cv2.imread(file_name)
@@ -94,7 +95,8 @@ if __name__ == "__main__":
         corners2 = cv2.cornerSubPix(gray, corners, (11,11), (-1,-1), criteria)
         corners2 = np.squeeze(corners2)
         # Find the rotation and translation vectors from object frame to camera frame
-        ret, rvecs, tvecs = cv2.solvePnP(objp, corners2, camera_mat, dist_coeffs)
+        # distortion coefficients passed into solvePnP should be 0 since we are dealing with a undistorted image
+        ret, rvecs, tvecs = cv2.solvePnP(objp, corners2, camera_mat, empty_dist_coeffs)
 
         # find the plane that the laser passes through by converting checkerboard points to camera frame using the rotation and translation vectors
         rmat, _ = cv2.Rodrigues(rvecs)
