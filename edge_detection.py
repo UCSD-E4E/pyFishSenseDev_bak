@@ -6,25 +6,33 @@ from matplotlib import cbook
 from matplotlib import cm
 from matplotlib.colors import LightSource
 from edge_detection_framework.helpers import cropImage, scale_data
-from detect_laser import get_masked_image_matrix, detect_laser_raw
-import glob
-from camera_imaging_pipeline.src.image_processing import imageProcessing
-import json
+import rawpy
+#from detect_laser import get_masked_image_matrix, detect_laser_raw
+#import glob
+#from camera_imaging_pipeline.src.image_processing import imageProcessing
+#import json
 
 def edgeDetection(img, rad, sigma, roi, channel=None):
-    if type(img) != np.ndarray:
-        img = plt.imread(img_path.as_posix()).astype('float16')
+    if type(img) != np.ndarray and img.suffix != ".ORF":
+        img = plt.imread(img.as_posix()).astype('float16')
     # if img.dtype != np.float16:
     #     img = img.astype('float16')
- 
-    if channel == 'r':
-        img = img[:,:,0]
-    elif channel == 'g':
-        img = img[:,:,1]
-    elif channel == 'b':
-        img = img[:,:,1]
-    elif channel == 'gray':
-        img = (img[:,:,0] + img[:,:,1] + img[:,:,2])/3
+
+    if type(img) != np.ndarray and img.suffix == ".ORF":
+        img = np.asarray(rawpy.imread(img.as_posix()).raw_image).astype('float16')
+
+    if roi == None:
+        roi = [0, 0, img.shape[1], img.shape[0]]
+    
+    if len(img.shape) == 3:
+        if channel == 'r':
+            img = img[:,:,0]
+        elif channel == 'g':
+            img = img[:,:,1]
+        elif channel == 'b':
+            img = img[:,:,1]
+        elif channel == 'gray':
+            img = (img[:,:,0] + img[:,:,1] + img[:,:,2])/3
     #Image pre-processing: select red channel, crop to ROI, scale the data
       
     #img = img[:,:,0]
@@ -63,42 +71,42 @@ def edgeDetection(img, rad, sigma, roi, channel=None):
 
 
 #img_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/img_filtering/P7130166.JPG")
-laser_p = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/laser-calibration-output-7-13.dat")
-cal_p = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/fsl-01d-lens.dat")
+# laser_p = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/laser-calibration-output-7-13.dat")
+# cal_p = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/fsl-01d-lens.dat")
 
-params_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/camera_imaging_pipeline/params1.json")
-img_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/data/7_23_La_Jolla_Kelp_Beds/Red_Laser_Test")
-img_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/data/7_23_nathans_pools/FSL-01D Fred")
-files = list(img_path.glob('*.ORF'))
+# params_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/camera_imaging_pipeline/params1.json")
+# img_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/data/7_23_La_Jolla_Kelp_Beds/Red_Laser_Test")
+# img_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/data/7_23_nathans_pools/FSL-01D Fred")
+# files = list(img_path.glob('*.ORF'))
 
-config1 = imageProcessing()
-with open(params_path, 'r', encoding='ascii') as handle:
-    params = json.load(handle)
+# config1 = imageProcessing()
+# with open(params_path, 'r', encoding='ascii') as handle:
+#     params = json.load(handle)
 
-for img_path in files:
-    img, _ = config1.applyToImage(img_path, params)
-    img = scale_data(img, 8)
+# for img_path in files:
+#     img, _ = config1.applyToImage(img_path, params)
+#     img = scale_data(img, 8)
 
-    roi = [0, 0, img.shape[1], img.shape[0]]
-    _, img_filtered = edgeDetection(img, 170, 3, roi, channel='r')
+#     roi = [0, 0, img.shape[1], img.shape[0]]
+#     _, img_filtered = edgeDetection(img, 170, 3, roi, channel='r')
 
-    img_f = get_masked_image_matrix(laser_p, cal_p, img_filtered)
-    contours = detect_laser_raw(img_f)
-    img_clone = img_f.copy()
-    img_clone = cv2.cvtColor(img_clone, cv2.COLOR_GRAY2RGB)
+#     img_f = get_masked_image_matrix(laser_p, cal_p, img_filtered)
+#     contours = detect_laser_raw(img_f)
+#     img_clone = img_f.copy()
+#     img_clone = cv2.cvtColor(img_clone, cv2.COLOR_GRAY2RGB)
 
-    for cnt in contours:
-        cv2.drawContours(img_clone, [cnt],0,(255,0,0),thickness=-1)
+#     for cnt in contours:
+#         cv2.drawContours(img_clone, [cnt],0,(255,0,0),thickness=-1)
 
-    #if (about-to-crash()):
-    #   dont()
+#     #if (about-to-crash()):
+#     #   dont()
 
-    label = "Filtered Image"
-    fig, axs = plt.subplots(1,2)
-    plt.title(label)
-    axs[0].imshow(img, cmap='gray')
-    axs[1].imshow(img_clone, cmap='gray')
-    plt.show()
+#     label = "Filtered Image"
+#     fig, axs = plt.subplots(1,2)
+#     plt.title(label)
+#     axs[0].imshow(img, cmap='gray')
+#     axs[1].imshow(img_clone, cmap='gray')
+#     plt.show()
 
     # cv2.namedWindow("Masked_Window", cv2.WINDOW_NORMAL)
     # cv2.imshow("Masked_Window", img_clone)
