@@ -1,6 +1,6 @@
 {
     "resize_val": 25,
-    "exposure_compensation": 0.7,
+    "exposure_compensation": 1,
     "tone_curve": [2, 1, 1], 
     "gamma_correction": 1,
     "denoising": 10,
@@ -13,6 +13,7 @@
       "exposureComp": true, 
       "toneCurve": false, 
       "gammaCorrection": 1.2, 
-      "greyWorldWB": true
+      "greyWorldWB": true,
+      "contrastStretching": true
     }
   }

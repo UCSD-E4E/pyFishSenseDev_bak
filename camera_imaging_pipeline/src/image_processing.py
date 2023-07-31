@@ -77,6 +77,8 @@ class imageProcessing():
                 img = gammaCorrection(img, gamma_correction)
             if processes['greyWorldWB'] == True:
                 img = greyWorldWB(img, colour)
+            # if processes['contrastStretching'] == True:
+            #     img = contrastStretching(img)
             
             #img = scale_pixels(img)
             #img = (img/256).astype('uint8')
