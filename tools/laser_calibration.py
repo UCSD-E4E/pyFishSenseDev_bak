@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
 import csv
-from laser_parallax import compute_world_points_from_depths
-from array_read_write import read_camera_calibration, write_laser_calibration
+from util.laser_parallax import compute_world_points_from_depths
+from util.array_read_write import read_camera_calibration, write_laser_calibration
 import os
 from constants import *
 import matplotlib.pyplot as plt

@@ -1,10 +1,11 @@
 import csv
 import numpy as np
 from typing import Tuple, List
-from laser_parallax import compute_world_points, compute_world_points_from_depths
-from array_read_write import read_camera_calibration, read_laser_calibration
+from util.laser_parallax import compute_world_points, compute_world_points_from_depths
+from util.array_read_write import read_camera_calibration, read_laser_calibration
 from constants import *
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 # Function to take in file name and create a map from file name to
 # The key information in the file
@@ -45,8 +46,8 @@ def get_fish_masses(fish_lengths: np.ndarray, species: List[str]) -> np.ndarray:
 def main():
     
     # Get the map made from the csv file
-
-    file_map = read_csv("fish_data_4_12.csv")
+    csv_file = Path("fish_data_4_12.csv")
+    file_map = read_csv(csv_file)
 
     # Get the laser position and orientation from the laser calibration file
 
@@ -129,7 +130,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-    
-
-

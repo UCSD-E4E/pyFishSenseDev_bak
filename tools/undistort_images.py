@@ -3,18 +3,19 @@ import glob
 import cv2
 from PIL import Image
 from enum import Enum
-from array_read_write import read_camera_calibration
+from util.array_read_write import read_camera_calibration
 from constants import *
+from tqdm import tqdm
 
 class ImageType(Enum):
     LASER_IMG = {
-        'src': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/calibration"),
-        'dst': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/calibration-rectified")
+        'src': os.fspath("./data/fsl-01d-07-25-23/laser/"),
+        'dst': os.fspath("./data/fsl-01d-07-25-23/laser-rectified/")
     }
-    FISH_IMG = {
-        'src': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/fish"),
-        'dst': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/fish-rectified"),
-    }
+    # FISH_IMG = {
+    #     'src': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/fish"),
+    #     'dst': os.fspath("/Users/kylehu/Desktop/4-19-2023 pool data/fish-rectified"),
+    # }
 
 def raw_to_png(img_type: ImageType):
     # rawData = open(path, 'rb').read()
@@ -24,13 +25,14 @@ def raw_to_png(img_type: ImageType):
     pass
     
 if __name__ == "__main__":
-    calib_file = os.fspath('calibration-output.dat')
+    calib_file = os.fspath('fsl-01d-lens-raw.dat')
     calibration_mat, distortion_coeffs = read_camera_calibration(calib_file)
     for image_type in (ImageType):
         src_path = image_type.value['src'] 
         dst_path = image_type.value['dst']
-        filenames = glob.glob(os.path.join(src_path,'*.JPG'))
-        for filename in filenames:
+        filenames = glob.glob(os.path.join(src_path,'*.PNG'))
+        for filename in tqdm(filenames):
+            # print(f"Processing {filename}")
             img = cv2.imread(filename)
             undistorted_img = cv2.undistort(img, calibration_mat, distortion_coeffs)
             cv2.imwrite(os.path.join(dst_path, os.path.basename(filename)), undistorted_img)
