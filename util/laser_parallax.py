@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def image_coordinate_to_projected_point(
         image_point: np.ndarray, 
         pixel_pitch_mm: float, 

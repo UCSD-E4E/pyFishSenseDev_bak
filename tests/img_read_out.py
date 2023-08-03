@@ -1,10 +1,12 @@
-from camera_imaging_pipeline.src.image_processing import imageProcessing
-import os
 import json
+import os
+
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import cm
 from matplotlib.colors import LightSource
+
+from camera_imaging_pipeline.src.image_processing import imageProcessing
 from camera_imaging_pipeline.utils.processing_functions import imageResize
 
 #read a sample image, read the parametrs .json file and load the parameters as a dictionary

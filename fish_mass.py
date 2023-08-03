@@ -1,11 +1,15 @@
 import csv
-import numpy as np
-from typing import Tuple, List
-from util.laser_parallax import compute_world_points, compute_world_points_from_depths
-from util.array_read_write import read_camera_calibration, read_laser_calibration
-from constants import *
-import matplotlib.pyplot as plt
 from pathlib import Path
+from typing import List, Tuple
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+from constants import *
+from util.array_read_write import (read_camera_calibration,
+                                   read_laser_calibration)
+from util.laser_parallax import (compute_world_points,
+                                 compute_world_points_from_depths)
 
 # Function to take in file name and create a map from file name to
 # The key information in the file

@@ -1,6 +1,6 @@
-import numpy as np
-import matplotlib.pyplot as plt
 import cv2 as cv
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 def display_data(img, p):

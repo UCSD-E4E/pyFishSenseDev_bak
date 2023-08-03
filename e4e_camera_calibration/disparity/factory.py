@@ -1,7 +1,6 @@
+from e4e_camera_calibration.cameras.calibrated_stereo_camera import \
+    CalibratedStereoCamera
 from e4e_camera_calibration.disparity.disparity import SGBMDisparity
-from e4e_camera_calibration.cameras.calibrated_stereo_camera import (
-    CalibratedStereoCamera,
-)
 
 DISPARITY_MAP = {"SGBM": SGBMDisparity}
 

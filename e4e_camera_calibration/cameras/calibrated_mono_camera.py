@@ -1,11 +1,12 @@
-from typing import List
 import io
 import tarfile
+from typing import List
 
 import cv2
 import numpy as np
 
-from e4e_camera_calibration.cameras.calibrated_camera_base import CalibratedCameraBase
+from e4e_camera_calibration.cameras.calibrated_camera_base import \
+    CalibratedCameraBase
 from e4e_camera_calibration.cameras.mono_camera import MonoCamera
 
 

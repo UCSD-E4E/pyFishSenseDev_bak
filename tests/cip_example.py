@@ -1,9 +1,11 @@
-from camera_imaging_pipeline.src.image_processing import imageProcessing
-import os
 import json
+import os
 from pathlib import Path
+
 import cv2
 import matplotlib.pyplot as plt
+
+from camera_imaging_pipeline.src.image_processing import imageProcessing
 
 #read a sample image, read the parametrs .json file and load the parameters as a dictionary
 #img1_path = os.path.join(os.path.dirname(__file__), '.\data\\test_data\Fishsense.dng')

@@ -1,16 +1,16 @@
-from pathlib import Path
-import cv2
+import json
 import os
 import sys
+from pathlib import Path
+
+import cv2
 import numpy as np
 import rawpy
-import json
+from detect_laser_line import get_vanishing_point_2d, return_line
+from edge_detection import edgeDetection
 
 from camera_imaging_pipeline.src.image_processing import imageProcessing
 
-from detect_laser_line import return_line, get_vanishing_point_2d
-
-from edge_detection import edgeDetection
 
 def get_vanishing_point(laser_path: Path, calibration_path: Path):
 

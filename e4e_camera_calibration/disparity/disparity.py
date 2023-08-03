@@ -1,15 +1,14 @@
+import math
 from abc import ABC, abstractmethod
 from typing import List
-import math
 
-from sherlock import Sherlock
 import cv2
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+from sherlock import Sherlock
 
-from e4e_camera_calibration.cameras.calibrated_stereo_camera import (
-    CalibratedStereoCamera,
-)
+from e4e_camera_calibration.cameras.calibrated_stereo_camera import \
+    CalibratedStereoCamera
 
 
 class DisparityBase(ABC):

@@ -1,8 +1,12 @@
 from argparse import ArgumentParser, Namespace
-from e4e_camera_calibration.commands.cli_command import CliCommand
-from e4e_camera_calibration.cameras.calibrated_camera_base import CalibratedCameraBase
-from e4e_camera_calibration.cameras.calibrated_stereo_camera import CalibratedStereoCamera
+
 from argument_parser_builder import ArgumentParserBuilder, ParsedArguments
+
+from e4e_camera_calibration.cameras.calibrated_camera_base import \
+    CalibratedCameraBase
+from e4e_camera_calibration.cameras.calibrated_stereo_camera import \
+    CalibratedStereoCamera
+from e4e_camera_calibration.commands.cli_command import CliCommand
 
 
 class CalibrateCommand(CliCommand):

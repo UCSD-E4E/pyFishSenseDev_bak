@@ -1,7 +1,6 @@
 from e4e_camera_calibration.cameras.camera import Camera
 from e4e_camera_calibration.cameras.qoocam import QoocamEgoStereoCamera
 
-
 CAMERA_MAP = {"qoocam-ego": QoocamEgoStereoCamera}
 
 

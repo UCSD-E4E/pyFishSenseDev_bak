@@ -3,11 +3,10 @@ from argparse import ArgumentParser, Namespace
 from glob import glob
 
 from e4e_camera_calibration.argument_parser_builder import (
-    ArgumentParserBuilder,
-    ParsedArguments,
-)
+    ArgumentParserBuilder, ParsedArguments)
 from e4e_camera_calibration.calibrators.calibrator import Calibrator
-from e4e_camera_calibration.calibrators.stereo_calibrator import StereoCalibrator
+from e4e_camera_calibration.calibrators.stereo_calibrator import \
+    StereoCalibrator
 from e4e_camera_calibration.commands.cli_command import CliCommand
 
 

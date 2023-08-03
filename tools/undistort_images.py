@@ -1,11 +1,14 @@
-import os
 import glob
+import os
+from enum import Enum
+
 import cv2
 from PIL import Image
-from enum import Enum
-from util.array_read_write import read_camera_calibration
-from constants import *
 from tqdm import tqdm
+
+from constants import *
+from util.array_read_write import read_camera_calibration
+
 
 class ImageType(Enum):
     LASER_IMG = {

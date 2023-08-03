@@ -1,11 +1,13 @@
+import json
 import os
 from pathlib import Path
-import json
+
 import cv2
 import numpy as np
+from detect_laser import get_masked_image_matrix
 
 from camera_imaging_pipeline.src.image_processing import imageProcessing
-from detect_laser import get_masked_image_matrix
+
 
 def mean_pooling(kernel_shape, img):
 

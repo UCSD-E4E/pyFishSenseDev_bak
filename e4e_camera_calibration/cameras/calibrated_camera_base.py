@@ -1,10 +1,10 @@
+import io
+import json
+import tarfile
 from abc import ABC, abstractmethod
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Iterable, Tuple
-import io
-import json
-import tarfile
 
 import cv2
 import numpy as np

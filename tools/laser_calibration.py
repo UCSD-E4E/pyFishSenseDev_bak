@@ -1,11 +1,15 @@
-import cv2
-import numpy as np
 import csv
-from util.laser_parallax import compute_world_points_from_depths
-from util.array_read_write import read_camera_calibration, write_laser_calibration
 import os
-from constants import *
+
+import cv2
 import matplotlib.pyplot as plt
+import numpy as np
+
+from constants import *
+from util.array_read_write import (read_camera_calibration,
+                                   write_laser_calibration)
+from util.laser_parallax import compute_world_points_from_depths
+
 
 def get_jacobian(
         ps: np.ndarray, 

@@ -1,11 +1,12 @@
 from argparse import ArgumentParser, Namespace
+
 from argument_parser_builder import ArgumentParserBuilder, ParsedArguments
 
+from e4e_camera_calibration.cameras.calibrated_stereo_camera import \
+    CalibratedStereoCamera
 from e4e_camera_calibration.commands.cli_command import CliCommand
-from e4e_camera_calibration.cameras.calibrated_stereo_camera import (
-    CalibratedStereoCamera,
-)
-from e4e_camera_calibration.disparity.factory import str2disparity, DISPARITY_MAP
+from e4e_camera_calibration.disparity.factory import (DISPARITY_MAP,
+                                                      str2disparity)
 
 
 class TuneDisparityCommand(CliCommand):

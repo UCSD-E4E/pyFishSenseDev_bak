@@ -1,14 +1,13 @@
-import os
+import glob
 import json
+import os
+from pathlib import Path
+
 import cv2
 import rawpy
-from pathlib import Path
-import glob
 from tqdm import tqdm
 
 from camera_imaging_pipeline.src.image_processing import imageProcessing
-
-
 
 # json_path_1 = os.path.join(os.path.dirname(__file__), r'.\\camera_imaging_pipeline\\params1.json')
 # params1 = json.load(open(json_path_1))

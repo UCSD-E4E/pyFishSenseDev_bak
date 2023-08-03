@@ -1,8 +1,10 @@
+import csv
+import glob
+import os
+
 import cv2
 import numpy as np
-import os
-import glob
-import csv
+
 from camera_imaging_pipeline.utils.processing_functions import imageResize
 
 #This variable we use to store the pixel location

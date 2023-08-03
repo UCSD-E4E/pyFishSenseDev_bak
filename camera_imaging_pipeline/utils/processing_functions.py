@@ -1,9 +1,10 @@
+import cv2 as cv
+import matplotlib.pyplot as plt
 import numpy as np
 from numpy.polynomial.polynomial import polyfit, polyval
-import cv2 as cv
+
 from .analysis import display_data
 from .helpers import clamp, scale_data
-import matplotlib.pyplot as plt
 
 
 #resize the image for convenient verification of the processed image by the user.

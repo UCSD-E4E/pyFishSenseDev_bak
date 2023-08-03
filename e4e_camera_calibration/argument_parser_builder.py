@@ -1,7 +1,7 @@
 from argparse import ArgumentParser, Namespace
 
-from e4e_camera_calibration.cameras.factory import CAMERA_MAP, str2camera
 from e4e_camera_calibration.cameras.camera import Camera
+from e4e_camera_calibration.cameras.factory import CAMERA_MAP, str2camera
 
 
 class ParsedArguments:

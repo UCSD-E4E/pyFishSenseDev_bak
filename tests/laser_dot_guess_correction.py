@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 def correct_laser_dot(coord: np.ndarray, img: np.ndarray) -> np.ndarray:
     green = img[:, :, 1]
     x,y = coord

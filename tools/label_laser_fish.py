@@ -1,9 +1,10 @@
+import csv
+import glob
+import os
+from copy import deepcopy
+
 import cv2
 import numpy as np
-import os
-import glob
-import csv
-from copy import deepcopy
 from laser_dot_guess_correction import correct_laser_dot
 
 #This variable we use to store the pixel location

@@ -1,8 +1,10 @@
+from pathlib import Path
+
+import cv2 as cv
 import numpy as np
 import rawpy
-import cv2 as cv
+
 from ..utils.processing_functions import *
-from pathlib import Path
 
 
 #this class allows the user to configure a image processing pipeline by adjusting

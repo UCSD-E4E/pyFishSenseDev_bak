@@ -1,12 +1,14 @@
 '''
     Module for reading and writing numpy arrays
 '''
-import numpy as np
-from typing import List
-import tarfile
 import io
 import json
-from datetime import datetime, date
+import tarfile
+from datetime import date, datetime
+from typing import List
+
+import numpy as np
+
 
 def write_numpy_array(array: np.ndarray, name: str, file: tarfile.TarFile): 
     with io.BytesIO() as b:
