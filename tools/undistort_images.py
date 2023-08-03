@@ -6,7 +6,7 @@ import cv2
 from PIL import Image
 from tqdm import tqdm
 
-from constants import *
+from util.constants import *
 from util.array_read_write import read_camera_calibration
 
 
