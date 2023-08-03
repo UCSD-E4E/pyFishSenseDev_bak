@@ -4,7 +4,7 @@ import os
 import glob
 import csv
 from copy import deepcopy
-from tests.laser_dot_guess_correction import correct_laser_dot
+from util.laser_dot_guess_correction import correct_laser_dot
 import argparse
 
 #This variable we use to store the pixel location
