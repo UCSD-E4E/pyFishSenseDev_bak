@@ -273,26 +273,26 @@ def display_interest_points(laser_path: Path,
     plt.show()
 
 
-laser_path_old = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/old/laser-calibration-output-4-12-bot-float.dat")
-calibration_path_old = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/old/calibration-output.dat")    
-laser_path_new = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/laser-calibration-output-7-13.dat")
-calibration_path_new = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/fsl-01d-lens.dat")
-data_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/data/7_23_La_Jolla_Kelp_Beds/Safety_Stop_Red")
-vanishing_point = get_vanishing_point(laser_path_new, calibration_path_new)[0:2]
+# laser_path_old = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/old/laser-calibration-output-4-12-bot-float.dat")
+# calibration_path_old = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/old/calibration-output.dat")    
+# laser_path_new = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/laser-calibration-output-7-13.dat")
+# calibration_path_new = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/fsl-01d-lens.dat")
+# data_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/data/7_23_La_Jolla_Kelp_Beds/Safety_Stop_Red")
+# vanishing_point = get_vanishing_point(laser_path_new, calibration_path_new)[0:2]
 
 
-for file in os.listdir(data_path.as_posix())[20:]:
+# for file in os.listdir(data_path.as_posix())[20:]:
 
-    filepath = data_path.joinpath(file)
-    if filepath.suffix != ".ORF":
-        continue
+#     filepath = data_path.joinpath(file)
+#     if filepath.suffix != ".ORF":
+#         continue
     
-    params_path_red = Path('C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/camera_imaging_pipeline/params_red.json')
-    params_path_color = Path('C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/camera_imaging_pipeline/params_color.json')
+#     params_path_red = Path('C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/camera_imaging_pipeline/params_red.json')
+#     params_path_color = Path('C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/camera_imaging_pipeline/params_color.json')
 
-    print(f"Processing {file}")
+#     print(f"Processing {file}")
     # display_detection(laser_path, calibration_path, filepath, params_path)
     #display_detection(laser_path_old, calibration_path_old, filepath, vanishing_point, params_path)
     #display_masked_image(laser_path, calibration_path, filepath, vanishing_point, True, params_path)
     #display_filtered_image(laser_path_new, calibration_path_new, filepath, vanishing_point, params_path)
-    display_interest_points(laser_path_new, calibration_path_new, filepath, vanishing_point, params_path_red, params_path_color)
+    #display_interest_points(laser_path_new, calibration_path_new, filepath, vanishing_point, params_path_red, params_path_color)
