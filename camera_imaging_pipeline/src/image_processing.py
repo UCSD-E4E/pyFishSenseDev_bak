@@ -23,6 +23,7 @@ class imageProcessing():
         exposure_val = params['exposure_compensation']
         colour = params['colour']
         denoising_val = params['denoising']
+        channel = params['channel']
         processes = params['processes']
         if type(img_path) != np.ndarray:
             
@@ -41,7 +42,7 @@ class imageProcessing():
                 print("Colorspacing")
                 img = colorSpace(img, colour)
             if processes['exposureComp'] == True:
-                print("Exposure Compositioning")
+                print("Exposure Compensation")
                 img = exposureComp(img, exposure_val)
             if processes['toneCurve'] == True:
                 print("Tone Curving")
@@ -52,10 +53,13 @@ class imageProcessing():
             if processes['greyWorldWB'] == True:
                 print("Whitepoint Correcting")
                 img = greyWorldWB(img, colour)
+            if processes['singleChannel'] == True:
+                print('Selecting Channel')
+                img = singleChannel(img, colour, channel)
             
             #img = scale_pixels(img)
             img = (img/256).astype('uint8')
-            print(img.max())
+            #print(img.max())
             return img ,imageResize(img, resize_val)
 
         else: 

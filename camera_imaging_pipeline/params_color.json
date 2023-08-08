@@ -15,6 +15,6 @@
       "toneCurve": false, 
       "gammaCorrection": false, 
       "greyWorldWB": true,
-      "singleChannel": true
+      "singleChannel": false
     }
   }

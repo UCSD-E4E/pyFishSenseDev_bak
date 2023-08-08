@@ -1,20 +1,18 @@
 import cv2
 import numpy as np
 from pathlib import Path
-import matplotlib.pyplot as plt
-from matplotlib import cbook
-from matplotlib import cm
-from matplotlib.colors import LightSource
 from edge_detection_framework.helpers import cropImage, scale_data
 import rawpy
+import json
 #from detect_laser import get_masked_image_matrix, detect_laser_raw
-#import glob
-#from camera_imaging_pipeline.src.image_processing import imageProcessing
-#import json
+import glob
+from camera_imaging_pipeline.src.image_processing import imageProcessing
+import json
+from scipy import signal
 
 def edgeDetection(img, rad, sigma, roi, channel=None):
     if type(img) != np.ndarray and img.suffix != ".ORF":
-        img = plt.imread(img.as_posix()).astype('float16')
+        img = cv2.imread(img.as_posix()).astype('float16')
     # if img.dtype != np.float16:
     #     img = img.astype('float16')
 
@@ -54,7 +52,9 @@ def edgeDetection(img, rad, sigma, roi, channel=None):
 
     #Apply gaussian blur to create a GHPF. Then multiply the shifted DFT with the GHPF.
     mask2 = cv2.GaussianBlur(mask, (19,19), sigma)
-    dft_shift_masked2 = np.multiply(dft_shift,mask2) / 255
+    #b_notch, a_notch = signal.iirnotch(4.61*pow(10, 14), 30, 4.61*pow(10, 14)*2)
+    #notch_filter= b_notch/a_notch
+    dft_shift_masked2 = np.multiply(dft_shift, mask2) / 255
 
     #Shift back the DFT and the filter to be able to display the images correctly. 
     back_ishift = np.fft.ifftshift(dft_shift)
@@ -71,44 +71,36 @@ def edgeDetection(img, rad, sigma, roi, channel=None):
 
 
 #img_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/img_filtering/P7130166.JPG")
-# laser_p = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/laser-calibration-output-7-13.dat")
-# cal_p = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/fsl-01d-lens.dat")
+laser_p = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/laser-calibration-output-7-13.dat")
+cal_p = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/fsl-01d-lens.dat")
 
-# params_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/camera_imaging_pipeline/params1.json")
-# img_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/data/7_23_La_Jolla_Kelp_Beds/Red_Laser_Test")
-# img_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/data/7_23_nathans_pools/FSL-01D Fred")
-# files = list(img_path.glob('*.ORF'))
+params_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/camera_imaging_pipeline/params1.json")
+img_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/data/7_23_La_Jolla_Kelp_Beds/Safety_Stop_Red")
+#img_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/data/7_23_nathans_pools/FSL-01F_Fred")
+files = list(img_path.glob("*.ORF"))
 
-# config1 = imageProcessing()
-# with open(params_path, 'r', encoding='ascii') as handle:
-#     params = json.load(handle)
+config1 = imageProcessing()
 
-# for img_path in files:
-#     img, _ = config1.applyToImage(img_path, params)
-#     img = scale_data(img, 8)
+with open(params_path, 'r', encoding='ascii') as handle:
+    params = json.load(handle)
 
-#     roi = [0, 0, img.shape[1], img.shape[0]]
-#     _, img_filtered = edgeDetection(img, 170, 3, roi, channel='r')
+for img_path in files[4:]:
+    img, _ = config1.applyToImage(img_path, params)
+    img = scale_data(img, 8)
+    print(img_path.name)
 
-#     img_f = get_masked_image_matrix(laser_p, cal_p, img_filtered)
-#     contours = detect_laser_raw(img_f)
-#     img_clone = img_f.copy()
-#     img_clone = cv2.cvtColor(img_clone, cv2.COLOR_GRAY2RGB)
 
-#     for cnt in contours:
-#         cv2.drawContours(img_clone, [cnt],0,(255,0,0),thickness=-1)
+    _, img_filtered = edgeDetection(img, 130, 3, None, channel='gray')
 
-#     #if (about-to-crash()):
-#     #   dont()
+    #cv2.namedWindow("Masked_Window", cv2.WINDOW_NORMAL)
+    resized = cv2.resize(img_filtered, (1200, 750))
 
-#     label = "Filtered Image"
-#     fig, axs = plt.subplots(1,2)
-#     plt.title(label)
-#     axs[0].imshow(img, cmap='gray')
-#     axs[1].imshow(img_clone, cmap='gray')
-#     plt.show()
 
-    # cv2.namedWindow("Masked_Window", cv2.WINDOW_NORMAL)
-    # cv2.imshow("Masked_Window", img_clone)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    cv2.imshow("Filtered Image", resized)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+    # save_path = Path("./data/filtered") / str(img_path.name)
+    # save_path.with_suffix(".jpg")
+    # print(save_path)
+    # cv2.imwrite(save_path.as_posix(), resized_f)

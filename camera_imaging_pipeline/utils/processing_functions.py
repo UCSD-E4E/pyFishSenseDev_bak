@@ -18,7 +18,7 @@ def imageResize(img, resize_val):
 
 #linearize the raw sensor date
 def linearization(img):
-    img = ((img - img.min()) * (1/(img.max() - img.min())))
+    #img = ((img - img.min()) * (1/(img.max() - img.min())))
     img = scale_data(img, 16)
     return img
 
@@ -96,6 +96,21 @@ def greyWorldWB(img, colour):
     else:
         balance_img = img   
     return balance_img
+
+def singleChannel(img, colour, channel):
+    if colour == True:
+        if channel == 'r':
+            img = img[:,:,2]
+        if channel == 'g':
+            img = img[:,:,1]
+        if channel == 'b':
+            img = img[:,:,0]
+        if channel == 'rgb':
+            img = img
+            
+    return img
+
+
 
 # def scale_pixels(img):
 #     b, g , r = cv.split(img)
