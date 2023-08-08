@@ -8,6 +8,7 @@ import json
 from helpers.img_zoom import zoom_at
 from helpers.closest_to_vanishing_point import closest_to_vanishing_point, get_optimal_keypoint, get_redest_keypoint, get_hsv_mask
 import matplotlib.pyplot as plt
+from edge_detection import edgeDetection
 
 from camera_imaging_pipeline.src.image_processing import imageProcessing
 
@@ -179,7 +180,7 @@ def display_detection(laser_path: Path,
         cv2.destroyAllWindows()
 
 def display_filtered_image(laser_path: Path, 
-                        calibration_path:Path, filepath: Path, vanishing_point: np.array, param_path=None):
+                        calibration_path:Path, filepath: Path, vanishing_point: np.array, params_path=None):
 
     params = json.load(open(params_path))
     processor = imageProcessing()
@@ -294,5 +295,5 @@ for file in os.listdir(data_path.as_posix())[20:]:
     # display_detection(laser_path, calibration_path, filepath, params_path)
     #display_detection(laser_path_old, calibration_path_old, filepath, vanishing_point, params_path)
     #display_masked_image(laser_path, calibration_path, filepath, vanishing_point, True, params_path)
-    #display_filtered_image(laser_path_new, calibration_path_new, filepath, vanishing_point, params_path)
-    display_interest_points(laser_path_new, calibration_path_new, filepath, vanishing_point, params_path_red, params_path_color)
+    display_filtered_image(laser_path_new, calibration_path_new, filepath, vanishing_point, params_path_color)
+    #display_interest_points(laser_path_new, calibration_path_new, filepath, vanishing_point, params_path_red, params_path_color)

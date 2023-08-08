@@ -79,28 +79,28 @@ img_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-p
 #img_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/data/7_23_nathans_pools/FSL-01F_Fred")
 files = list(img_path.glob("*.ORF"))
 
-config1 = imageProcessing()
+# config1 = imageProcessing()
 
-with open(params_path, 'r', encoding='ascii') as handle:
-    params = json.load(handle)
+# with open(params_path, 'r', encoding='ascii') as handle:
+#     params = json.load(handle)
 
-for img_path in files[4:]:
-    img, _ = config1.applyToImage(img_path, params)
-    img = scale_data(img, 8)
-    print(img_path.name)
-
-
-    _, img_filtered = edgeDetection(img, 130, 3, None, channel='gray')
-
-    #cv2.namedWindow("Masked_Window", cv2.WINDOW_NORMAL)
-    resized = cv2.resize(img_filtered, (1200, 750))
+# for img_path in files[4:]:
+#     img, _ = config1.applyToImage(img_path, params)
+#     img = scale_data(img, 8)
+#     # print(img_path.name)
 
 
-    cv2.imshow("Filtered Image", resized)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+#     _, img_filtered = edgeDetection(img, 130, 3, None, channel='gray')
 
-    # save_path = Path("./data/filtered") / str(img_path.name)
-    # save_path.with_suffix(".jpg")
-    # print(save_path)
-    # cv2.imwrite(save_path.as_posix(), resized_f)
+#     #cv2.namedWindow("Masked_Window", cv2.WINDOW_NORMAL)
+#     resized = cv2.resize(img_filtered, (1200, 750))
+
+
+#     # cv2.imshow("Filtered Image", resized)
+#     # cv2.waitKey(0)
+#     # cv2.destroyAllWindows()
+
+#     # save_path = Path("./data/filtered") / str(img_path.name)
+#     # save_path.with_suffix(".jpg")
+#     # print(save_path)
+#     # cv2.imwrite(save_path.as_posix(), resized_f)
