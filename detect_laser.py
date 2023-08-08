@@ -12,12 +12,39 @@ import matplotlib.pyplot as plt
 from camera_imaging_pipeline.src.image_processing import imageProcessing
 
 from detect_laser_line import return_line, get_vanishing_point_2d
+from typing import List, Tuple
 
 #from edge_detection import edgeDetection
+
+
+def get_masked_image_with_mask(img: np.ndarray, mask: np.ndarray) -> np.ndarray:
+
+    mask_rgb = np.dstack((mask,mask,mask)).astype(np.uint8)
+    masked_image = img * mask_rgb
+    return masked_image
+
+def return_mask_stack(mask_list: List[np.ndarray]) -> np.ndarray:
+
+    output = np.zeros(mask_list[0].shape)
+
+    for mat in mask_list:
+        output = np.logical_or(output, mat).astype(np.uint8)
+    
+    return output
+    
 
 def get_vanishing_point(laser_path: Path, calibration_path: Path):
 
     return get_vanishing_point_2d(laser_path, calibration_path)
+
+def get_mask(laser_path: Path, calibration_path: Path, shape: Tuple[int, int]) -> np.ndarray:
+
+    mask = np.zeros(shape=shape)
+    start_point, end_point = return_line(laser_path, calibration_path)
+    mask = cv2.line(mask, start_point, end_point, color=1, thickness=75)
+
+    mask = mask.astype(np.uint8)
+    return mask
 
 def get_masked_image_matrix(laser_path: Path, 
                          calibration_path:Path, img: np.ndarray):
@@ -178,121 +205,121 @@ def display_detection(laser_path: Path,
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-def display_filtered_image(laser_path: Path, 
-                        calibration_path:Path, filepath: Path, vanishing_point: np.array, param_path=None):
+# def display_filtered_image(laser_path: Path, 
+#                         calibration_path:Path, filepath: Path, vanishing_point: np.array, param_path=None):
 
-    params = json.load(open(params_path))
-    processor = imageProcessing()
-    processed_image, _ = processor.applyToImage(filepath, params)
-    _, filtered_image = edgeDetection(processed_image, 150, 0, None, channel='r')
+#     params = json.load(open(params_path))
+#     processor = imageProcessing()
+#     processed_image, _ = processor.applyToImage(filepath, params)
+#     _, filtered_image = edgeDetection(processed_image, 150, 0, None, channel='r')
 
-    #masked_image = get_masked_image_matrix(laser_path, calibration_path, filtered_image)
+#     #masked_image = get_masked_image_matrix(laser_path, calibration_path, filtered_image)
 
-    contours = detect_laser_raw(filtered_image, vanishing_point)   
+#     contours = detect_laser_raw(filtered_image, vanishing_point)   
 
-    img_clone = filtered_image.copy()
-    img_clone = cv2.cvtColor(filtered_image, cv2.COLOR_GRAY2RGB)
+#     img_clone = filtered_image.copy()
+#     img_clone = cv2.cvtColor(filtered_image, cv2.COLOR_GRAY2RGB)
 
 
-    for cnt in contours:
-        cv2.drawContours(img_clone,[cnt],-1,(0,0,65535),thickness=8)
+#     for cnt in contours:
+#         cv2.drawContours(img_clone,[cnt],-1,(0,0,65535),thickness=8)
     
-    resized_original = cv2.resize(processed_image, (1200, 750))
-    resized_filtered = cv2.resize(img_clone, (1200, 750))
-    cv2.imshow("original resized", resized_original)
-    cv2.imshow("resized", resized_filtered)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    
-
-def display_filtered_masked_image(laser_path: Path, 
-                         calibration_path:Path, filepath: Path, vanishing_point: np.array, param_path=None):
-    
-    params = json.load(open(params_path))
-    processor = imageProcessing()
-    processed_image, _ = processor.applyToImage(filepath, params)
-    _, filtered_image = edgeDetection(processed_image, 300, 0, None, channel='r')
-
-    masked_image = get_masked_image_matrix(laser_path, calibration_path, filtered_image)
-
-    contours = detect_laser_raw(masked_image, vanishing_point)   
-
-    img_clone = filtered_image.copy()
-    img_clone = cv2.cvtColor(img_clone, cv2.COLOR_GRAY2RGB)
-
-
-    for cnt in contours:
-        cv2.drawContours(img_clone,[cnt],-1,(0,0,65535),thickness=10)
+#     resized_original = cv2.resize(processed_image, (1200, 750))
+#     resized_filtered = cv2.resize(img_clone, (1200, 750))
+#     cv2.imshow("original resized", resized_original)
+#     cv2.imshow("resized", resized_filtered)
+#     cv2.waitKey(0)
+#     cv2.destroyAllWindows()
     
 
-    resized = cv2.resize(img_clone, (1200, 750))
-    cv2.imshow("resized", resized)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-
-def display_interest_points(laser_path: Path, 
-                         calibration_path:Path, filepath: Path, vanishing_point: np.array, param_path_red=None, params_path_color=None):
+# def display_filtered_masked_image(laser_path: Path, 
+#                          calibration_path:Path, filepath: Path, vanishing_point: np.array, param_path=None):
     
-    params = json.load(open(params_path_red))
-    processor = imageProcessing()
-    img_red, _ = processor.applyToImage(filepath, params)
+#     params = json.load(open(params_path))
+#     processor = imageProcessing()
+#     processed_image, _ = processor.applyToImage(filepath, params)
+#     _, filtered_image = edgeDetection(processed_image, 300, 0, None, channel='r')
 
-    params = json.load(open(params_path_color))
-    processor = imageProcessing()
-    img_color, _ = processor.applyToImage(filepath, params)
+#     masked_image = get_masked_image_matrix(laser_path, calibration_path, filtered_image)
 
-    _, mask = get_masked_image_matrix(laser_path, calibration_path, img_color)
-    mask = mask.astype('uint8')
+#     contours = detect_laser_raw(masked_image, vanishing_point)   
 
-    img_color = cv2.cvtColor(img_color, cv2.COLOR_BGR2RGB)
+#     img_clone = filtered_image.copy()
+#     img_clone = cv2.cvtColor(img_clone, cv2.COLOR_GRAY2RGB)
 
 
-    img_color_copy = img_color.copy()
-    img_red_copy = img_red.copy()
-
-    sift = cv2.SIFT_create(20, 3, 0.08, 10, 1.6)
-    kp = sift.detect(img_red_copy, mask)
-
-    #optimal_kp = get_optimal_keypoint(img_color_copy, kp, vanishing_point)
-    optimal_keypoint = get_redest_keypoint(img_color_copy, kp)
-    #masked = get_hsv_mask(img_color_copy)
-
-    ones = np.ones_like(img_red_copy) * 255
-    img_out = cv2.drawKeypoints(img_color_copy, optimal_keypoint, img_color_copy, flags=4)
-    ones = cv2.drawKeypoints(ones, kp, ones, flags=4)
+#     for cnt in contours:
+#         cv2.drawContours(img_clone,[cnt],-1,(0,0,65535),thickness=10)
     
-    # resized = cv2.resize(img_copy, (1200, 750))
-    # resized_ones = cv2.resize(ones, (1200, 750))
-    # cv2.imshow("resized", zoom_at(resized, 2.2, coord=(1200/2, 750/2)))
-    # cv2.imshow("zeros", zoom_at(resized_ones, 3, coord=(1200/2, 750/2)))
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
 
-    plt.imshow(img_out)
-    plt.show()
+#     resized = cv2.resize(img_clone, (1200, 750))
+#     cv2.imshow("resized", resized)
+#     cv2.waitKey(0)
+#     cv2.destroyAllWindows()
 
 
-laser_path_old = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/old/laser-calibration-output-4-12-bot-float.dat")
-calibration_path_old = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/old/calibration-output.dat")    
-laser_path_new = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/laser-calibration-output-7-13.dat")
-calibration_path_new = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/fsl-01d-lens.dat")
-data_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/data/7_23_La_Jolla_Kelp_Beds/Safety_Stop_Red")
-vanishing_point = get_vanishing_point(laser_path_new, calibration_path_new)[0:2]
-
-
-for file in os.listdir(data_path.as_posix())[20:]:
-
-    filepath = data_path.joinpath(file)
-    if filepath.suffix != ".ORF":
-        continue
+# def display_interest_points(laser_path: Path, 
+#                          calibration_path:Path, filepath: Path, vanishing_point: np.array, param_path_red=None, params_path_color=None):
     
-    params_path_red = Path('C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/camera_imaging_pipeline/params_red.json')
-    params_path_color = Path('C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/camera_imaging_pipeline/params_color.json')
+#     params = json.load(open(params_path_red))
+#     processor = imageProcessing()
+#     img_red, _ = processor.applyToImage(filepath, params)
 
-    print(f"Processing {file}")
-    # display_detection(laser_path, calibration_path, filepath, params_path)
-    #display_detection(laser_path_old, calibration_path_old, filepath, vanishing_point, params_path)
-    #display_masked_image(laser_path, calibration_path, filepath, vanishing_point, True, params_path)
-    #display_filtered_image(laser_path_new, calibration_path_new, filepath, vanishing_point, params_path)
-    display_interest_points(laser_path_new, calibration_path_new, filepath, vanishing_point, params_path_red, params_path_color)
+#     params = json.load(open(params_path_color))
+#     processor = imageProcessing()
+#     img_color, _ = processor.applyToImage(filepath, params)
+
+#     _, mask = get_masked_image_matrix(laser_path, calibration_path, img_color)
+#     mask = mask.astype('uint8')
+
+#     img_color = cv2.cvtColor(img_color, cv2.COLOR_BGR2RGB)
+
+
+#     img_color_copy = img_color.copy()
+#     img_red_copy = img_red.copy()
+
+#     sift = cv2.SIFT_create(20, 3, 0.08, 10, 1.6)
+#     kp = sift.detect(img_red_copy, mask)
+
+#     #optimal_kp = get_optimal_keypoint(img_color_copy, kp, vanishing_point)
+#     optimal_keypoint = get_redest_keypoint(img_color_copy, kp)
+#     #masked = get_hsv_mask(img_color_copy)
+
+#     ones = np.ones_like(img_red_copy) * 255
+#     img_out = cv2.drawKeypoints(img_color_copy, optimal_keypoint, img_color_copy, flags=4)
+#     ones = cv2.drawKeypoints(ones, kp, ones, flags=4)
+    
+#     # resized = cv2.resize(img_copy, (1200, 750))
+#     # resized_ones = cv2.resize(ones, (1200, 750))
+#     # cv2.imshow("resized", zoom_at(resized, 2.2, coord=(1200/2, 750/2)))
+#     # cv2.imshow("zeros", zoom_at(resized_ones, 3, coord=(1200/2, 750/2)))
+#     # cv2.waitKey(0)
+#     # cv2.destroyAllWindows()
+
+#     plt.imshow(img_out)
+#     plt.show()
+
+
+# laser_path_old = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/old/laser-calibration-output-4-12-bot-float.dat")
+# calibration_path_old = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/old/calibration-output.dat")    
+# laser_path_new = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/laser-calibration-output-7-13.dat")
+# calibration_path_new = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/files/fsl-01d-lens.dat")
+# data_path = Path("C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/data/7_23_La_Jolla_Kelp_Beds/Safety_Stop_Red")
+# vanishing_point = get_vanishing_point(laser_path_new, calibration_path_new)[0:2]
+
+
+# for file in os.listdir(data_path.as_posix())[20:]:
+
+#     filepath = data_path.joinpath(file)
+#     if filepath.suffix != ".ORF":
+#         continue
+    
+#     params_path_red = Path('C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/camera_imaging_pipeline/params_red.json')
+#     params_path_color = Path('C:/Users/Hamish/Documents/E4E/Fishsense/fishsense-lite-python-pipeline/camera_imaging_pipeline/params_color.json')
+
+#     print(f"Processing {file}")
+#     # display_detection(laser_path, calibration_path, filepath, params_path)
+#     #display_detection(laser_path_old, calibration_path_old, filepath, vanishing_point, params_path)
+#     #display_masked_image(laser_path, calibration_path, filepath, vanishing_point, True, params_path)
+#     #display_filtered_image(laser_path_new, calibration_path_new, filepath, vanishing_point, params_path)
+#     display_interest_points(laser_path_new, calibration_path_new, filepath, vanishing_point, params_path_red, params_path_color)

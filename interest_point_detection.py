@@ -4,20 +4,18 @@
 
 import cv2
 import numpy as np
-import json 
 from pathlib import Path
 from camera_imaging_pipeline.src.image_processing import imageProcessing
-from detect_laser import get_masked_image_matrix
-from helpers.img_zoom import zoom_at
+
 
 
 
 def display_interest_points_matrix(img: np.ndarray) -> np.ndarray:
 
-    sift = cv2.SIFT_create(20, 3, 0.14, 5, 2.1)
+    img_copy = img.copy()
+    sift = cv2.SIFT_create(40, 5, 0.001, 100, 0.8)
     kp = sift.detect(img)
-    ones = np.ones_like(img_copy) * 255
-    img_copy = cv2.drawKeypoints(img_copy, kp, img_copy, flags=4)
+    img_copy = cv2.drawKeypoints(img_copy, kp, img_copy, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
     
     return img_copy
 
