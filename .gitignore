@@ -213,3 +213,4 @@ poetry.toml
 
 data/
 *.dat
+*.pth

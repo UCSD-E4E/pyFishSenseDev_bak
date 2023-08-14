@@ -8,7 +8,6 @@ import json
 from helpers.img_zoom import zoom_at
 from helpers.closest_to_vanishing_point import closest_to_vanishing_point, get_optimal_keypoint, get_redest_keypoint, get_hsv_mask
 import matplotlib.pyplot as plt
-
 from camera_imaging_pipeline.src.image_processing import imageProcessing
 
 from detect_laser_line import return_line, get_vanishing_point_2d
