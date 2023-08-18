@@ -20,7 +20,7 @@ def linearization(img):
     # g = ((g - g.min()) * (1/(g.max() - g.min()) * 65535)).astype('uint16')
     # r = ((r - r.min()) * (1/(r.max() - r.min()) * 65535)).astype('uint16')
     # return np.dstack((b,g,r))
-    img = ((img - img.min()) * (1/(img.max() - img.min()) * 65535)).astype('uint16')
+    img = ((img - img.min()) * (1/(img.max() - img.min()) * 65535)).astype(np.uint16)
     return img
 
 #apply a demosaicing algorithm to create a 3 color channel RGB image 
