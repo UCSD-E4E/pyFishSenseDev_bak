@@ -4,6 +4,7 @@ import json
 import os
 import cv2
 from multiprocessing import Pool, cpu_count
+from tqdm import tqdm
 
 def process(raw: str):
     new_path = raw.replace("raw", "png").replace(".ORF", ".PNG")
@@ -22,7 +23,7 @@ def process(raw: str):
 
 def main():
     raw_images = glob("./data/**/*.ORF", recursive=True)
-    Pool(cpu_count()).map(process, raw_images)
+    list(tqdm(Pool(cpu_count()).imap(process, raw_images), total=len(raw_images)))
 
 if __name__ == '__main__':
     main()

@@ -1,7 +1,7 @@
 import numpy as np
 import rawpy
 import cv2 as cv
-from camera_imaging_pipeline.utils.h_functions import *
+from utils.h_functions import *
 
 #this class allows the user to configure a image processing pipeline by adjusting
 #the paramters in the params1.json file. Creat a new .json for each desired 
@@ -23,8 +23,8 @@ class imageProcessing():
     #and it returns the resized data for displaying the processed image conveniently to 
     #the user.
     def applyToImage(self, img_path):
-        self.raw = rawpy.imread(img_path)
-        self.img = self.raw.raw_image.copy()
+        with rawpy.imread(img_path) as raw:
+            self.img = raw.raw_image.copy()
         if self.processes['linearization'] == True:
             self.img = linearization(self.img)
         if self.processes['demosaic'] == True:
