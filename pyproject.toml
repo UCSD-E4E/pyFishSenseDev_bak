@@ -13,6 +13,8 @@ matplotlib = "^3.6.3"
 tqdm = "^4.64.1"
 scikit-image = "^0.19.3"
 rawpy = "^0.18.1"
+tifffile = "^2023.8.12"
+imagecodecs = "^2023.8.12"
 
 [tool.poetry.dev-dependencies]
 black = "^22.12.0"
