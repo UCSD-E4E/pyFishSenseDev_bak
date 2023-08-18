@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 def correct_laser_dot(coord: np.ndarray, img: np.ndarray) -> np.ndarray:
-    green = img[:, :, 1]
+    green = img[:, :, 2]
     x,y = coord
 
     laser_mask = np.zeros_like(green)

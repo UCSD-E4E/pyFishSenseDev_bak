@@ -32,12 +32,15 @@ def click_event(event, x, y, flags, param):
         if len(glob_list) == 0:
             img_clone = img.copy()
             strLaser = "Laser: " + strXY
-            newX,newY = correct_laser_dot(coord=np.array([x,y]),img=img)
+            try: 
+                newX,newY = correct_laser_dot(coord=np.array([x,y]),img=img)
+            except: 
+                newX,newY = x,y
             glob_list.append((newX,newY))
             cv2.putText(img_clone, strLaser, (int(newX),int(newY)), font, 0.5, (0,255,0), 2)
             cv2.circle(img_clone, (int(newX), int(newY)), radius=3, color=(0,0,255), thickness=-1)
             
-        cv2.imshow("Resized_Window", img_clone)
+        cv2.imshow("Resized Window", img_clone)
 
 def prep_args():
     parser = argparse.ArgumentParser(prog='label_laser_calibration',
@@ -50,9 +53,10 @@ def prep_args():
 
 if __name__ == '__main__':
     args = prep_args()
-    jpg_list = glob.glob(os.path.join(args.input_path,'*.JPG'))
+    jpg_list = glob.glob(os.path.join(args.input_path,'*.PNG'))
     for file in jpg_list:
         curr_file = file
+        print(f"File Name: {curr_file}")
         img = cv2.imread(curr_file)
         img_clone = img.copy()
 
@@ -83,7 +87,6 @@ if __name__ == '__main__':
                     exit()
                 print("Image annotation complete.")
                 output_csv_dict[curr_file] = deepcopy(glob_list)
-                print(f"File Name: {curr_file}")
                 print(f"Laser Position: {glob_list[0]}")
                 glob_list.clear()
                 cv2.destroyAllWindows()
