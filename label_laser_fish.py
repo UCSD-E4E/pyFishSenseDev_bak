@@ -32,7 +32,10 @@ def click_event(event, x, y, flags, param):
         if len(glob_list) == 0:
             img_clone = img.copy()
             strLaser = "Laser: " + strXY
-            newX, newY = correct_laser_dot(coord=np.array([x,y]), img=img)
+            try: 
+                newX, newY = correct_laser_dot(coord=np.array([x,y]), img=img)
+            except: 
+                newX, newY = x,y
             glob_list.append((newX,newY))
             cv2.putText(img_clone, strLaser, (int(newX),int(newY)), font, 0.5, (0,255,0), 2)
             cv2.circle(img_clone, (int(newX),int(newY)), radius=3, color=(0,0,255), thickness=-1)
@@ -53,8 +56,8 @@ def click_event(event, x, y, flags, param):
         cv2.imshow("Resized_Window", img_clone)
 
 def prep_args():
-    parser = argparse.ArgumentParser(prog='label_laser_calibration',
-                                     description='Labeling tool for laser calibration images')
+    parser = argparse.ArgumentParser(prog='label_laser_fish',
+                                     description='Labeling tool for fish images')
     parser.add_argument('-i', '--input', help='Folder containing all images to be labeled', dest='input_path', required=True)
     parser.add_argument('-o', '--output', help='CSV containing image paths and point coordinates', dest='output_csv', required=True)
     args = parser.parse_args()
@@ -62,11 +65,14 @@ def prep_args():
 
 if __name__=='__main__':
     args = prep_args() 
-    jpg_list = glob.glob(os.path.join(args.input_path,'*.JPG'))
+    jpg_list = glob.glob(os.path.join(args.input_path,'*.PNG'))
     for file in jpg_list:
         curr_file = file
-        img = cv2.imread(curr_file)
-        img_clone = img.copy()
+        try: 
+            img = cv2.imread(curr_file)
+            img_clone = img.copy()
+        except: 
+            continue
 
         cv2.namedWindow("Resized_Window", cv2.WINDOW_FULLSCREEN)
         cv2.imshow("Resized_Window", img)
