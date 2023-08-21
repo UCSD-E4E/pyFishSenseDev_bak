@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 import csv
-from laser_parallax import compute_world_points_from_depths
 from array_read_write import read_camera_calibration, write_laser_calibration
 import os
 from constants import *
@@ -59,7 +58,7 @@ def prep_args() -> argparse.ArgumentParser:
 # return the depths
 def find_laser_depth(tup):
     idx, file_name, img_coord, camera_mat, focal_length_mm, principal_point = tup
-    # print(f"Processing {os.path.basename(file_name)}")
+    print(f"Processing {os.path.basename(file_name)}")
     img = cv2.imread(file_name)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # find checkerboard
@@ -91,10 +90,10 @@ def find_laser_depth(tup):
     scale_factor = (normal_vec.T @ board_plane_points[0])/(normal_vec.T @ laser_ray) 
     laser_3d_cam = laser_ray * scale_factor
 
-    # print(f"Estimated depth of laser dot in {os.path.basename(file_name)} is {laser_3d_cam[2]}")
+    print(f"Estimated depth of laser dot in {os.path.basename(file_name)} is {laser_3d_cam[2]}")
     # depths.append(laser_3d_cam[2])
     # img_coords2.append(img_coords[i])                
-    return idx, laser_3d_cam[2]
+    return idx, laser_3d_cam
 
 if __name__ == "__main__":
     parser = prep_args()
@@ -123,27 +122,16 @@ if __name__ == "__main__":
     # distance_list = []
     idxs = list(enumerate(file_list))[0]
     pool_args = [(i, file_list[i], img_coords[i], camera_mat, focal_length_mm, principal_point) for i in range(len(file_list))]
-    with Pool(processes=cpu_count()) as pool:
+    with Pool(processes=1) as pool:
         result = list(tqdm(pool.imap(find_laser_depth, pool_args), total=len(file_list)))
-        # result = list(tqdm(pool.imap(find_laser_depth, (idxs, file_list, img_coords, [camera_mat]*len(file_list), [focal_length_mm]*len(file_list), [principal_point]*len(file_list))), total=len(file_list)))
-    result = [(idx, depth) for idx, depth in result if idx is not None and depth is not None]
-    img_coords2 = [img_coords[i] for i,_ in result if i is not None]
-    
+    result = [(idx, point) for idx, point in result if idx is not None and point is not None]
 
     combined_result = list(zip(*result))
     combined_result.sort(key=lambda x: x[0])
-    _, depths = combined_result
-
-    depths = np.array(depths)
-    img_coords2 = np.array(img_coords2)
+    _, ps = combined_result
+    ps = np.array(ps)
     
     # use list of laser dot coordinates to calibrate laser
-    ps = compute_world_points_from_depths(
-        camera_params=camera_params,
-        image_coordinates=(principal_point - img_coords2),
-        depths=depths
-    )
-
     state_init = np.array([0,0,1,-0.04,-0.11])
     state, _ = gauss_newton_estimate_state(ps, state_init)
 

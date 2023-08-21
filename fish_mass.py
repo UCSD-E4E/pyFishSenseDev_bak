@@ -136,7 +136,7 @@ def main():
                                                 principal_point=principal_point)
     
     for i,file in enumerate(file_map):
-        output_csv.append(file, fish_lengths[i], fish_masses[i], file_map[file]["species"])
+        output_csv.append([file, fish_lengths[i], fish_masses[i]])
 
     # Write this 2d matrix into a csv file
     with open(args.dest_path, 'w') as output_file:

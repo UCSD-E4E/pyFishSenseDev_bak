@@ -68,8 +68,11 @@ if __name__=='__main__':
     jpg_list = glob.glob(os.path.join(args.input_path,'*.PNG'))
     for file in jpg_list:
         curr_file = file
-        img = cv2.imread(curr_file)
-        img_clone = img.copy()
+        try: 
+            img = cv2.imread(curr_file)
+            img_clone = img.copy()
+        except: 
+            continue
 
         cv2.namedWindow("Resized_Window", cv2.WINDOW_FULLSCREEN)
         cv2.imshow("Resized_Window", img)

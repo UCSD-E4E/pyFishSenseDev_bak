@@ -34,7 +34,7 @@ def undistort_raw(tup):
 if __name__ == "__main__":
     args = prep_args()
     calibration_mat, distortion_coeffs = read_camera_calibration(args.camera_calib_path)
-    image_paths = glob.glob('./data/png/07/**/*.PNG', recursive=True)
+    image_paths = glob.glob('./data/png/04-slate/**/*.PNG', recursive=True)
     os.makedirs(os.fspath('./data/png_rectified'), exist_ok=True)
     with Pool(processes=cpu_count()) as pool: 
         list(tqdm(pool.imap(undistort_raw, [(file, calibration_mat, distortion_coeffs) for file in image_paths]), total=len(image_paths)))
