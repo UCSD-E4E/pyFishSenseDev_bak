@@ -4,9 +4,11 @@ This repository contains a Python implementation of the Fishsense lite pipeline.
 ## Steps to use
 1. Run `poetry install`. This will install all required dependencies.
 2. Run `poetry shell` to execute all following commands within the poetry environment.
-3. Calibrate the lens using `python e4e_camera_calibration`. Documentation on this tool can be found [here](https://github.com/UCSD-E4E/e4e-camera-calibration).
-4. Undistort all laser and fish images using `python undistort_images.py`. The laser and fish image source and destination paths are specified in the file, so change these as necessary.
-5. Label laser calibration images using `python label_laser_calibration.py`. 
+3. Create a `data` folder in this directory. Add a `raw` subdirectory and add your raw data inside. This can take whatever folder structure you need. 
+4. Process all raws by running `python camera_imaging_pipeline/process.py`. This will place all images inside `data/png`, copying whatever folder structure is inside `data/raw`.
+4. Calibrate the lens using `python e4e_camera_calibration`. Documentation on this tool can be found [here](https://github.com/UCSD-E4E/e4e-camera-calibration).
+5. Undistort all laser and fish images using `python undistort_images.py`. This will place all images inside `data/png_rectified`, copying whatever folder structure is inside `data/png`.
+6. Label laser calibration images using `python label_laser_calibration.py`. 
      * This script uses the following command line arguments: 
         * `-i` or `--input` specifies the input path which contains all *rectified* laser images.
         * `-o` or `--output` specifies the location to save the generated csv file.
@@ -14,11 +16,11 @@ This repository contains a Python implementation of the Fishsense lite pipeline.
         * `ESC` will skip the current image, use this when the laser dot is difficult to find, the calibration board is not completely in frame, or things are out of focus.
         * `r` will remove the current label, in case you make a mistake
         * `e` will save the added label and load the next image
-6. Calibrate the laser using `python laser_calibration.py`. This script uses the following command line arguments:
+7. Calibrate the laser using `python laser_calibration.py`. This script uses the following command line arguments:
      * `-c` or `--calib` specifies the location of the lens calibration file generated from step 3. 
      * `-i` or `--input` specifies the location of the csv file from part 5. 
      * `-o` or `--output` specifies the location to save the generated laser calibration file.
-7. Label the fish images using `python label_laser_fish.py`
+8. Label the fish images using `python label_laser_fish.py`
      * This script uses the following command line arguments: 
         * `-i` or `--input` specifies the input path which contains all *rectified* fish with laser images.
         * `-o` or `--output` specifies the location to save the generated csv file.
@@ -27,7 +29,7 @@ This repository contains a Python implementation of the Fishsense lite pipeline.
         * `ESC` will skip the current image, use this when the laser dot is difficult to find, or things are out of focus.
         * `r` will remove all current labels, in case you make a mistake
         * `e` will save the added label and load the next image
-8. Run the fish analysis using `python fish_mass.py`. This script uses the following command line arguments: 
+9. Run the fish analysis using `python fish_mass.py`. This script uses the following command line arguments: 
      * `-c` or `--cameracalib` specifies the location of the lens calibration file generated from step 3. 
      * `-l` or `--lasercalib` specifies the location of the laser calibration file generated from step 6.
      * `-i` or `--input` specifies the location of the csv file generated from step 7.
