@@ -31,53 +31,58 @@ def click_event(event, x, y, flags, param):
 
         if len(glob_list) == 0:
             img_clone = img.copy()
-            strLaser = "Point 1: " + strXY
+            strLaser = "Point 1: "
             newX, newY = (x,y)
             glob_list.append((newX,newY))
-            cv2.putText(img_clone, strLaser, (int(newX),int(newY)), font, 0.5, (0,255,0), 2)
+            cv2.putText(img_clone, strLaser, (int(newX),int(newY)), font, 0.25, (0,255,0), 2)
             cv2.circle(img_clone, (int(newX),int(newY)), radius=3, color=(0,0,255), thickness=-1)
             
         
         elif len(glob_list) == 1:
-            strHead = "Point 2: " + strXY
+            strHead = "Point 2: " 
             glob_list.append((x,y))
-            cv2.putText(img_clone, strHead, (x,y), font, 0.5, (0,255,0), 2)
+            cv2.putText(img_clone, strHead, (x,y), font, 0.25, (0,255,0), 2)
             cv2.circle(img_clone, (x,y), radius=3, color=(0,0,255), thickness=-1)
             
         elif len(glob_list) == 2:
-            strTail = "Point 3: " + strXY
+            strTail = "Point 3: " 
             glob_list.append((x,y))
-            cv2.putText(img_clone, strTail, (x,y), font, 0.5, (0,255,0), 2)
+            cv2.putText(img_clone, strTail, (x,y), font, 0.25, (0,255,0), 2)
             cv2.circle(img_clone, (x,y), radius=3, color=(0,0,255), thickness=-1)
         
         elif len(glob_list) == 3:
-            strTail = "Point 4: " + strXY
+            strTail = "Point 4: " 
             glob_list.append((x,y))
-            cv2.putText(img_clone, strTail, (x,y), font, 0.5, (0,255,0), 2)
+            cv2.putText(img_clone, strTail, (x,y), font, 0.25, (0,255,0), 2)
             cv2.circle(img_clone, (x,y), radius=3, color=(0,0,255), thickness=-1)
         
         elif len(glob_list) == 4:
-            strTail = "Point 5: " + strXY
+            strTail = "Point 5: " 
             glob_list.append((x,y))
-            cv2.putText(img_clone, strTail, (x,y), font, 0.5, (0,255,0), 2)
+            cv2.putText(img_clone, strTail, (x,y), font, 0.25, (0,255,0), 2)
             cv2.circle(img_clone, (x,y), radius=3, color=(0,0,255), thickness=-1)
         
         elif len(glob_list) == 5:
-            strTail = "Point 6: " + strXY
+            strTail = "Point 6: " 
             glob_list.append((x,y))
-            cv2.putText(img_clone, strTail, (x,y), font, 0.5, (0,255,0), 2)
+            cv2.putText(img_clone, strTail, (x,y), font, 0.25, (0,255,0), 2)
             cv2.circle(img_clone, (x,y), radius=3, color=(0,0,255), thickness=-1)
         
         elif len(glob_list) == 6:
-            strTail = "Point 7: " + strXY
+            strTail = "Point 7: " 
             glob_list.append((x,y))
-            cv2.putText(img_clone, strTail, (x,y), font, 0.5, (0,255,0), 2)
+            cv2.putText(img_clone, strTail, (x,y), font, 0.25, (0,255,0), 2)
             cv2.circle(img_clone, (x,y), radius=3, color=(0,0,255), thickness=-1)
         
         elif len(glob_list) == 7:
-            strTail = "Point 8: " + strXY
+            strTail = "Point 8: " 
             glob_list.append((x,y))
-            cv2.putText(img_clone, strTail, (x,y), font, 0.5, (0,255,0), 2)
+            cv2.putText(img_clone, strTail, (x,y), font, 0.25, (0,255,0), 2)
+            cv2.circle(img_clone, (x,y), radius=3, color=(0,0,255), thickness=-1)
+        elif len(glob_list) == 8:
+            strTail = "Laser: " 
+            glob_list.append((x,y))
+            cv2.putText(img_clone, strTail, (x,y), font, 0.25, (0,255,0), 2)
             cv2.circle(img_clone, (x,y), radius=3, color=(0,0,255), thickness=-1)
         
         cv2.imshow("Resized_Window", img_clone)
@@ -123,7 +128,7 @@ if __name__=='__main__':
                 if len(glob_list) == 0:
                     print("Please redo annotations. You have reset and not recompleted.")
                     continue
-                if len(glob_list) < 8:
+                if len(glob_list) < 9:
                     print("Please finish annotations")
                     continue
                 print("Image annotation complete.")
@@ -137,6 +142,7 @@ if __name__=='__main__':
                 print(f"Point 6: {glob_list[5]}")
                 print(f"Point 7: {glob_list[6]}")
                 print(f"Point 8: {glob_list[7]}")
+                print(f"Laser: {glob_list[8]}")
 
                 glob_list.clear()
                 cv2.destroyAllWindows()
@@ -147,9 +153,9 @@ if __name__=='__main__':
 
     # convert dict to list
     output_csv = []
-    output_csv.append(['name','Point1X','Point1Y' ,'Point2X','Point2Y','Point3X','Point3Y','Point4X','Point4Y', 'Point5X','Point5Y',  'Point6X','Point6Y',  'Point7X','Point7Y',  'Point8X','Point8Y'])
+    output_csv.append(['name','Point1X','Point1Y' ,'Point2X','Point2Y','Point3X','Point3Y','Point4X','Point4Y', 'Point5X','Point5Y',  'Point6X','Point6Y',  'Point7X','Point7Y',  'Point8X','Point8Y', 'LaserX', 'LaserY'])
     for item in output_csv_dict.items():
-        output_csv.append([item[0], *item[1][0], *item[1][1], *item[1][2],*item[1][3],*item[1][4],*item[1][5],*item[1][6],*item[1][7]])
+        output_csv.append([item[0], *item[1][0], *item[1][1], *item[1][2],*item[1][3],*item[1][4],*item[1][5],*item[1][6],*item[1][7],*item[1][8]])
 
     # Write this 2d matrix into a csv file
     with open(args.output_csv, 'w') as output_file:
