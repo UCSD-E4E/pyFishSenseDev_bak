@@ -14,16 +14,14 @@ def imageResize(img, resize_val):
 #linearize the raw sensor date
 def linearization(img):
     img[img > 65000] = img.min()
+    K = 65535
 
-    # b,g,r = cv.split(img)
-    # b = ((b - b.min()) * (1/(b.max() - b.min()) * 65535)).astype('uint16')
-    # g = ((g - g.min()) * (1/(g.max() - g.min()) * 65535)).astype('uint16')
-    # r = ((r - r.min()) * (1/(r.max() - r.min()) * 65535)).astype('uint16')
-    # return np.dstack((b,g,r))
-    img = ((img - img.min()) * (1/(img.max() - img.min()) * 65535)).astype('uint16')
+    #linearize the data on a scale from 0 to K. By default the function outputs a 16 bit numpy array. 
+    img = ((img - img.min()) * (1/(img.max() - img.min()) * K)).astype('uint16')
     return img
 
-#apply a demosaicing algorithm to create a 3 color channel RGB image 
+#Apply a opencv demosaicing algorithm to transform the raw sensor values to BGR color space. 
+#Since opencv functions assume BGR color space, the image musst be converted to RGB color space for usage with e.g. matplotlib. 
 def demosaic(img):
     img = cv.demosaicing(img, cv.COLOR_BayerGB2BGR) 
     return img

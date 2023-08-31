@@ -1,7 +1,7 @@
 import numpy as np
 import rawpy
 import cv2 as cv
-from camera_imaging_pipeline.utils.h_functions import *
+from ..utils.h_functions import *
 
 #this class allows the user to configure a image processing pipeline by adjusting
 #the paramters in the params1.json file. Creat a new .json for each desired 
@@ -12,7 +12,7 @@ class imageProcessing():
         self.gamma_correction = params['gamma_correction']
         self.tone_curve = params['tone_curve']
         self.exposure_val = params['exposure_compensation']
-        self.colour = params['colour']
+        self.colour = True
         self.denoising_val = params['denoising']
         self.processes = params['processes']
         self.img = None
