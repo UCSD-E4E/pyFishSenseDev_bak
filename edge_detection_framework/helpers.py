@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.colors import LightSource
 
-
+#this function is used to rescale the data as needed. Either to a 8 bit or 16 bit resolution, or to values between 0 and 1. 
 def scale_data(img, type):
     if type == 8:
         scale = 255
@@ -24,6 +24,7 @@ def scale_data(img, type):
 
     return img
 
+# used to crop the image to a specific region of interest. 
 def cropImage(img, roi):
     x, y, w, h = roi
     img_new = img[y:y+h,x:x+w]
@@ -31,6 +32,7 @@ def cropImage(img, roi):
     return img_new
 
 
+# a function for quickly plotting a matrix in 3D.
 def plot3D(arr):
     z = arr
     nrows, ncols = z.shape
@@ -50,6 +52,7 @@ def plot3D(arr):
 
     plt.show()
 
+# a function for displaying a cut of a matrix at the middle center x value. 
 def plotCut(arr, rad):
     cut = arr[int(np.floor(arr.shape[0]/2)), :]
     x = np.linspace(0, len(cut), len(cut))

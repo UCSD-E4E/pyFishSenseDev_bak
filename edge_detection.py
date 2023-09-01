@@ -11,17 +11,21 @@ import json
 from scipy import signal
 
 def edgeDetection(img, rad, sigma, roi, channel=None):
+    #if a string is passed to the function, and the file is anything other than a .ORF, such as a .jpg, then the image is read in with the opencv imread() function
     if type(img) != np.ndarray and img.suffix != ".ORF":
         img = cv2.imread(img.as_posix()).astype('float16')
     # if img.dtype != np.float16:
     #     img = img.astype('float16')
 
+    #if a string is passed to the function, and the image is a .ORF raw file, then the we read in the image with rawpy and convert it to a numpy array.
     if type(img) != np.ndarray and img.suffix == ".ORF":
         img = np.asarray(rawpy.imread(img.as_posix()).raw_image).astype('float16')
 
+    # if no value is passed as the region of interest, then we automatically take the whole image. 
     if roi == None:
         roi = [0, 0, img.shape[1], img.shape[0]]
     
+    # the desired channel is selected depending on the keyword passed to the channel= keyword argument. 
     if len(img.shape) == 3:
         if channel == 'r':
             img = img[:,:,0]
