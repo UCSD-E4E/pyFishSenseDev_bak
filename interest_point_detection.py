@@ -13,13 +13,14 @@ from helpers.img_zoom import zoom_at
 
 
 
-
+#this is a function for displaying an image with all the interest points found by the SIFT algorithm.
 def display_interest_points(laser_path: Path, 
                          calibration_path:Path, filepath: Path, vanishing_point: np.array, param_path=None):
     
 
     print(filepath.suffix)
 
+    # if the image is a string with the path of the image file as a .ORF raw file, then apply image processing, otherwise read in the image with opencv. 
     if filepath.suffix == ".ORF":
         params = json.load(open(params_path))
         processor = imageProcessing()
@@ -28,30 +29,25 @@ def display_interest_points(laser_path: Path,
     else:
         img = cv2.imread(filepath.as_posix())
 
+    #apply a mask to the image that only returns the values along the line that the laser may be situated on.
     _, mask = get_masked_image_matrix(laser_path, calibration_path, img)
     mask = mask.astype('uint8')
-    # img = cv2.imread('P7170114.JPG')
-    # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-
+    #make a copy of the image to work on. 
     img_copy = img.copy()
-    #masked_copy = masked_image.copy()
-    #print('Contrast Threshold: ' +str(i))
+
+    #initialize and apply the SIFT algorithm to the image copy. 
     sift = cv2.SIFT_create(20, 3, 0.14, 5, 2.1)
     kp = sift.detect(img_copy, mask)
-    print(cv2.KeyPoint_convert(kp))
-    print(len(kp))
 
+    #initialize a matrix in order to draw the keypoints onto a white background. 
     ones = np.ones_like(img_copy) * 255
+
+    #draw the keypoints found by the SIFT algorithm onto the image and onto the white image. 
     img_copy = cv2.drawKeypoints(img_copy, kp, img_copy, flags=4)
     ones = cv2.drawKeypoints(ones, kp, ones, flags=4)
-    #img_copy = cv2.circle(img_copy, kp, 5, 5, 20)
 
-    # resized = cv2.resize(img, (1200, 750))
-    # cv2.imshow("Detected Keypoints", resized)
-    # k = cv2.waitKey(0)
-
-    
+    #resize the image and the white matrix and display both matrices.     
     resized = cv2.resize(img_copy, (1200, 750))
     resized_ones = cv2.resize(ones, (1200, 750))
     cv2.imshow("resized", zoom_at(resized, 2.2, coord=(1200/2, 750/2)))

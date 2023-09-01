@@ -179,9 +179,11 @@ def display_detection(laser_path: Path,
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
+# this is a function for applying the edge detection algorithm to an image and then looking for the highest values in that filtered image.
 def display_filtered_image(laser_path: Path, 
                         calibration_path:Path, filepath: Path, vanishing_point: np.array, params_path=None):
 
+    #apply image processing and edge detection to the image. 
     params = json.load(open(params_path))
     processor = imageProcessing()
     processed_image, _ = processor.applyToImage(filepath, params)
@@ -189,39 +191,47 @@ def display_filtered_image(laser_path: Path,
 
     #masked_image = get_masked_image_matrix(laser_path, calibration_path, filtered_image)
 
+    #detect the highest values within the image
     contours = detect_laser_raw(filtered_image, vanishing_point)   
 
+    # create a copy of the image and convert the gray scale image to RGB 
     img_clone = filtered_image.copy()
     img_clone = cv2.cvtColor(filtered_image, cv2.COLOR_GRAY2RGB)
 
-
+    #draw the contours around the highest intensity values onto the image. 
     for cnt in contours:
         cv2.drawContours(img_clone,[cnt],-1,(0,0,65535),thickness=8)
     
+    #rescale and display the masked image with the contours and without the contours. 
     resized_original = cv2.resize(processed_image, (1200, 750))
     resized_filtered = cv2.resize(img_clone, (1200, 750))
     cv2.imshow("original resized", resized_original)
     cv2.imshow("resized", resized_filtered)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-    
 
+# this is a function for applying the edge detection algorithm to an image and then looking for the highest values in that 
+# filtered image within a mask that represents the possible locations we know the laser could be located at. 
 def display_filtered_masked_image(laser_path: Path, 
                          calibration_path:Path, filepath: Path, vanishing_point: np.array, param_path=None):
-    
-    params = json.load(open(params_path))
+    # apply image processing and edge detection to the image. 
+    params = json.load(open(param_path))
     processor = imageProcessing()
     processed_image, _ = processor.applyToImage(filepath, params)
     _, filtered_image = edgeDetection(processed_image, 300, 0, None, channel='r')
 
+    # get the masked image. 
     masked_image = get_masked_image_matrix(laser_path, calibration_path, filtered_image)
 
+    #look for the highest intensity within the masked image. 
     contours = detect_laser_raw(masked_image, vanishing_point)   
 
+    #create a copy and convert the gray scale image to a RGB image. 
     img_clone = filtered_image.copy()
     img_clone = cv2.cvtColor(img_clone, cv2.COLOR_GRAY2RGB)
 
 
+    #draw the contours around the highest intensity values onto the 
     for cnt in contours:
         cv2.drawContours(img_clone,[cnt],-1,(0,0,65535),thickness=10)
     
@@ -231,7 +241,7 @@ def display_filtered_masked_image(laser_path: Path,
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-
+# this is a function for applying the SIFT algorithm to and then returning the keypoint found by SIFT with the highest mean red value in it's proximity. 
 def display_interest_points(laser_path: Path, 
                          calibration_path:Path, filepath: Path, vanishing_point: np.array, param_path_red=None, params_path_color=None):
     
@@ -252,24 +262,18 @@ def display_interest_points(laser_path: Path,
     img_color_copy = img_color.copy()
     img_red_copy = img_red.copy()
 
+    # initialize and apply the SIFT algorithm.
     sift = cv2.SIFT_create(20, 3, 0.08, 10, 1.6)
     kp = sift.detect(img_red_copy, mask)
 
-    #optimal_kp = get_optimal_keypoint(img_color_copy, kp, vanishing_point)
+    # get the keypoint with the highest mean red value in it's proximity from the list of keypoints returned by the SIFT algorithm.
     optimal_keypoint = get_redest_keypoint(img_color_copy, kp)
-    #masked = get_hsv_mask(img_color_copy)
 
+    # draw the keypoints onto the image and onto a white background. 
     ones = np.ones_like(img_red_copy) * 255
     img_out = cv2.drawKeypoints(img_color_copy, optimal_keypoint, img_color_copy, flags=4)
     ones = cv2.drawKeypoints(ones, kp, ones, flags=4)
     
-    # resized = cv2.resize(img_copy, (1200, 750))
-    # resized_ones = cv2.resize(ones, (1200, 750))
-    # cv2.imshow("resized", zoom_at(resized, 2.2, coord=(1200/2, 750/2)))
-    # cv2.imshow("zeros", zoom_at(resized_ones, 3, coord=(1200/2, 750/2)))
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
-
     plt.imshow(img_out)
     plt.show()
 

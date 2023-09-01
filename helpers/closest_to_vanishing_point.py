@@ -14,7 +14,7 @@ def closest_to_vanishing_point(point_list, vanishing_point):
 
     return min_dist_point
 
-
+# this is a function for getting the keypoint that is closest to the vanishing point of the laser. 
 def get_optimal_keypoint(color_image, kp_list, vanishing_point):
     point_list = cv2.KeyPoint_convert(kp_list)
     print(len(point_list))
@@ -28,15 +28,19 @@ def get_optimal_keypoint(color_image, kp_list, vanishing_point):
     
     return optimal_kp
 
-
+#this function take a rgb image and a list of keypoints from the SIFT algorithm, and then return the keypoint that has the most red in it's proximity. 
 def get_redest_keypoint(color_img, kp_list):
-    print(kp_list)
+
+    #don't execute the code if the list of keywords is empty. 
     if kp_list != ():
+        #convert the keypoints returned by the sift.detect() mehtod to actual coordinates. 
         point_list = cv2.KeyPoint_convert(kp_list).astype('uint16')
         #hsv = cv2.cvtColor(color_img, cv2.COLOR_RGB2HSV)
+
         max_red_val = 0
         optimal_kp = []
 
+        #this loop finds the keypoint that has the highest mean red value in a radius of 10 pixels around the keypoint. 
         for point in point_list:
             print(point)
             r = 10
@@ -49,11 +53,12 @@ def get_redest_keypoint(color_img, kp_list):
                 max_red_val = mean_red_val
                 optimal_kp = point
 
+        # we return the optimal keypoint as a keypoint instead of an actual coordinate. 
         optimal_keypoint_out = cv2.KeyPoint_convert([optimal_kp])
-        print("This is the optimal keypoint: ")
-        print(optimal_kp)
+
 
     else:
+        # if no keypoints are found, then we return the original list and let the user know that no keypoints were found. 
         optimal_keypoint_out = kp_list
         print('No keypoints detected!')
         

@@ -24,7 +24,7 @@ The main processing functions are found in utils/processing_functions.py. Helper
 You can find an example of how to use the imageProcessing class in cip_example.py.
 =======
 ## Params.json file strcuture
-Paste the following into a params.json file if you would like to specify new parametrs for image processing: 
+Paste the following into a params.json file if you would like to specify new parameters for image processing: 
 
 {
     "resize_val": 25,
