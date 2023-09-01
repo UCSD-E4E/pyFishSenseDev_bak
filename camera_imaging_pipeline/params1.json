@@ -6,7 +6,7 @@
     "denoising": 3,
     "processes":{
       "linearization": true, 
-      "demosaic": false, 
+      "demosaic": true, 
       "denoising": false, 
       "colorSpace": false, 
       "exposureComp": false, 

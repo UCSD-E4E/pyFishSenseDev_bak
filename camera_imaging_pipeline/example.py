@@ -16,8 +16,7 @@ params1 = json.load(open(json_path))
 config1 = imageProcessing(params1)
 img1_data, img1_visual = config1.applyToImage(img_path.as_posix())
 
-
-cv2.imwrite('raw_img.PNG', img1_data)
+cv2.imwrite('raw_img.png', img1_data)
 
 # cv2.imshow('processed image', img1_visual)
 # cv2.waitKey(0)
