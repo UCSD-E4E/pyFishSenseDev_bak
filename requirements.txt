@@ -1,0 +1,9 @@
+jupyterlab
+notebook
+torch
+numpy
+opencv-python
+tqdmpip
+matplotlib
+scikit-image
+rawpy
