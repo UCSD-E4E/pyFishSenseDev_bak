@@ -24,9 +24,12 @@ def process(raw: str):
     cv2.imwrite(new_path, img1_data)
 
 def main():
-    raw_images = glob("./data/**/*.ORF", recursive=True)
+    raw_images = glob("./data/raw/**/*.ORF", recursive=True)
     raw_images.sort()
     list(tqdm(Pool(cpu_count()).imap(process, raw_images), total=len(raw_images)))
+
+    # for image in raw_images:
+    #     process(image)
 
 if __name__ == '__main__':
     main()
