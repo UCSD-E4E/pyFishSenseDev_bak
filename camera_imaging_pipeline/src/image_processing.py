@@ -1,7 +1,8 @@
 import numpy as np
 import rawpy
 import cv2 as cv
-from camera_imaging_pipeline.utils.h_functions import *
+from utils.h_functions import *
+import gc
 
 #this class allows the user to configure a image processing pipeline by adjusting
 #the paramters in the params1.json file. Creat a new .json for each desired 
@@ -15,7 +16,6 @@ class imageProcessing():
         self.colour = params['colour']
         self.denoising_val = params['denoising']
         self.processes = params['processes']
-        self.img = None
 
     #calls the relevant functions from h_functions.py for the processing pipeline,
     #according to the parameters specified in params1.json.
@@ -23,40 +23,35 @@ class imageProcessing():
     #and it returns the resized data for displaying the processed image conveniently to 
     #the user.
     def applyToImage(self, img_path):
-        self.raw = rawpy.imread(img_path)
-        self.img = self.raw.raw_image.copy()
-        if self.processes['linearization'] == True:
-            self.img = linearization(self.img)
+        img = None
+
+        while img is None or np.average(img) < 2000:
+            # if img is not None:
+            #     print("Repeating...")
+
+            with rawpy.imread(img_path) as raw:
+                img = raw.raw_image.copy()
+
+            img = img[:, :-53]
+
+            if self.processes['linearization'] == True:
+                img = linearization(img)
+
         if self.processes['demosaic'] == True:
-            self.img = demosaic(self.img)
-
+            img = demosaic(img)
         if self.processes['denoising'] == True:
-            self.img = denoising(self.img, self.denoising_val)
+            img = denoising(img, self.denoising_val)
         if self.processes['colorSpace'] == True:
-            self.img = colorSpace(self.img, self.colour)
+            img = colorSpace(img, self.colour)
         if self.processes['exposureComp'] == True:
-            self.img = exposureComp(self.img, self.exposure_val)
+            img = exposureComp(img, self.exposure_val)
         if self.processes['toneCurve'] == True:
-            self.img = toneCurve(self.img, self.tone_curve)
+            img = toneCurve(img, self.tone_curve)
         if self.processes['gammaCorrection'] == True:
-            self.img = gammaCorrection(self.img, self.gamma_correction)
+            img = gammaCorrection(img, self.gamma_correction)
         if self.processes['greyWorldWB'] == True:
-            self.img = greyWorldWB(self.img, self.colour)
-        # self.img = cv.convertScaleAbs(self.img)
-        return self.img ,imageResize(self.img, self.resize_val)
+            img = greyWorldWB(img, self.colour)
 
-    #method for returning the processed image.
-    def getImage(self):
-        if self.img.all() == None: 
-            print('No image loaded')
-        else:
-            return self.img
-
-    #method for displaying the processed image to the user. 
-    def showImage(self, img):
-        if self.img.all() == None:
-            print('No image loaded')
-        else:
-            cv.imshow("urer", img)
-            k = cv.waitKey(0)
-            cv.destroyAllWindows()
+        img = equalizeHist(img)
+        # img = cv.convertScaleAbs(img)
+        return img, imageResize(img, self.resize_val)
