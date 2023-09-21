@@ -1,1 +1,2 @@
+from .fish_segmentation_inference import FishSegmentationInference
 from .raw_processor import RawProcessor
