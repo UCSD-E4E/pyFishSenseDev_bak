@@ -3,6 +3,7 @@ name = "fishsense-lite-python-pipeline"
 version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.12"
@@ -19,5 +20,5 @@ numba = "^0.57.1"
 black = "^22.12.0"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
