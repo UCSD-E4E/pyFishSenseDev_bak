@@ -1,6 +1,5 @@
 import numpy as np
 import cv2 as cv
-import skimage
 
 #resize the image for convenient verification of the processed image by the user.
 def imageResize(img, resize_val):
