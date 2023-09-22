@@ -214,6 +214,7 @@ if __name__ == "__main__":
     from fishsense_lite_python_pipeline.image_rectifier import ImageRectifier
 
     raw_processor = RawProcessor()
+    raw_processor_dark = RawProcessor(enable_histogram_equalization=False)
     image_rectifier = ImageRectifier(Path("./data/lens-calibration.pkg"))
     laser_detector = LaserDetector(
         Path("./data/models/laser_detection.pth"),
@@ -221,10 +222,14 @@ if __name__ == "__main__":
         Path("./data/laser-calibration.pkg"))
 
     img = raw_processor.load_and_process(Path("./data/P8030201.ORF"))
+    img_dark = raw_processor_dark.load_and_process(Path("./data/P8030201.ORF"))
     img = image_rectifier.rectify(img)
+    img_dark = image_rectifier.rectify(img_dark)
 
-    x, y = laser_detector.find_laser(((img.astype('float64') / 65535) * 255).astype('uint8'))
+    img8 = ((img.astype('float64') / 65535) * 255).astype('uint8')
+    img_dark8 = ((img_dark.astype('float64') / 65535) * 255).astype('uint8')
+    coords = laser_detector.find_laser(img_dark8)
     
-    plt.imshow(img)
-    plt.plot(x, y, 'r.')
+    plt.imshow(img8)
+    plt.plot(coords[0], coords[1], 'r.')
     plt.show()
