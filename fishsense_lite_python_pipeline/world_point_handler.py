@@ -21,7 +21,7 @@ class WorldPointHandler:
             laser_origin=self.laser_position, 
             laser_axis=self.laser_orientation,
             camera_params=self.camera_params, 
-            image_coordinates=(self.principal_point - coord2d)
+            image_coordinate=(self.principal_point - coord2d)
         )
 
 if __name__ == "__main__":
