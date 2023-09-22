@@ -193,15 +193,15 @@ class LaserDetector:
                 final_coord = coord
                 min_distance = distance
 
-        allowed_coords = np.array(allowed_coords)
-        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        # allowed_coords = np.array(allowed_coords)
+        # img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-        plt.imshow(img_rgb)
-        plt.title("Detected laser")
-        plt.plot(possible_coords[:,1], possible_coords[:, 0], 'g.')
-        plt.plot(allowed_coords[:,1], allowed_coords[:, 0], 'b.')
-        plt.plot(final_coord[1], final_coord[0], 'r.')
-        plt.show()
+        # plt.imshow(img_rgb)
+        # plt.title("Detected laser")
+        # plt.plot(possible_coords[:,1], possible_coords[:, 0], 'g.')
+        # plt.plot(allowed_coords[:,1], allowed_coords[:, 0], 'b.')
+        # plt.plot(final_coord[1], final_coord[0], 'r.')
+        # plt.show()
         
         return np.array([final_coord[1], final_coord[0]]) # was previously y, x
         # return final_coord
