@@ -5,6 +5,8 @@ from detectron2.config import get_cfg
 from detectron2.engine import DefaultPredictor
 from projects.PointRend.point_rend import add_pointrend_config
 from requests import get
+import cv2
+import numpy as np
 import torch
 
 class FishSegmentationInference:
@@ -55,9 +57,19 @@ class FishSegmentationInference:
 
         return FishSegmentationInference.CONFIG_PATH.absolute()
 
-    def inference(self, img):
+    def inference(self, img: np.ndarray) -> np.ndarray:
         outputs = self.model(img)
-        return outputs
+
+        complete_mask = np.zeros_like(img[:, :, 0], dtype=np.uint8)
+        for idx, mask in enumerate(outputs['instances'].pred_masks):
+            complete_mask += (idx + 1) * mask.cpu()
+        
+        return complete_mask
     
 if __name__ == "__main__":
-    FishSegmentationInference('cuda' if torch.cuda.is_available() else 'cpu')
+    img = cv2.imread("./data/png/P7170081.png")
+
+    fish_segmentation_inference = FishSegmentationInference('cuda' if torch.cuda.is_available() else 'cpu')
+    outputs = fish_segmentation_inference.inference(img)
+
+    print(outputs)
