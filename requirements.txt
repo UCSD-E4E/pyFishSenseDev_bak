@@ -3,7 +3,7 @@ notebook
 torch
 numpy
 opencv-python
-tqdmpip
+tqdm
 matplotlib
 scikit-image
 rawpy
