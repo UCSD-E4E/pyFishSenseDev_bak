@@ -1,10 +1,11 @@
 from pathlib import Path
+from typing import Tuple
 
 import numpy as np
 
 from fishsense_lite_python_pipeline.library.array_read_write import read_camera_calibration, read_laser_calibration
 from fishsense_lite_python_pipeline.library.constants import PIXEL_PITCH_MM
-from fishsense_lite_python_pipeline.library.laser_parallax import compute_world_point
+from fishsense_lite_python_pipeline.library.laser_parallax import compute_world_point, compute_world_point_from_depth
 
 class WorldPointHandler:
     def __init__(self, lens_calibration_path: Path, laser_calibration_path: Path):
@@ -23,6 +24,20 @@ class WorldPointHandler:
             camera_params=self.camera_params, 
             image_coordinate=(self.principal_point - coord2d)
         )
+    
+    def calculate_world_coordinates_with_depth(self, left_coord: np.ndarray, right_coord: np.ndarray, depth: float) -> Tuple[np.ndarray, np.ndarray]:
+        left_coord3d = compute_world_point_from_depth(
+            camera_params=self.camera_params, 
+            image_coordinate=(self.principal_point - left_coord), 
+            depth=depth
+        )
+        right_coord3d = compute_world_point_from_depth(
+            camera_params=self.camera_params, 
+            image_coordinate=(self.principal_point - right_coord), 
+            depth=depth
+        )
+
+        return left_coord3d, right_coord3d
 
 if __name__ == "__main__":
     world_point_handler = WorldPointHandler(Path("./data/lens-calibration.pkg"), Path("./data/laser-calibration.pkg"))
