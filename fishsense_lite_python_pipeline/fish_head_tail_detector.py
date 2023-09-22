@@ -5,13 +5,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class FishHeadTailDetector:
-    def find_head_tail(self, mask: np.ndarray, img) -> Tuple[np.ndarray, np.ndarray]:
+    def find_head_tail(self, mask: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         
         y, x = mask.nonzero()
         x_min, x_max, y_min, y_max = [x.min(), x.max(), y.min(), y.max()]
 
         mask_crop = mask[y_min:y_max, x_min:x_max]
-        img_crop = img[y_min:y_max, x_min:x_max, :]
         y, x = mask_crop.nonzero()
 
         x_mean = np.mean(x)
