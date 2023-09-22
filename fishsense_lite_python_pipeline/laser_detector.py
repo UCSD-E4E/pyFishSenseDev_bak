@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Tuple
 
 from skimage.feature import peak_local_max
+import cv2
 import numpy as np
 import torch
 import torch.nn as nn
@@ -207,7 +208,6 @@ class LaserDetector:
         # return final_coord
 
 if __name__ == "__main__":
-    import cv2
     import matplotlib.pyplot as plt
 
     from fishsense_lite_python_pipeline.raw_processor import RawProcessor
