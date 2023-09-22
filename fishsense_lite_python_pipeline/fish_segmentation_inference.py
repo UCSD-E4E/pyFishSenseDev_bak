@@ -5,9 +5,7 @@ from detectron2.config import get_cfg
 from detectron2.engine import DefaultPredictor
 from projects.PointRend.point_rend import add_pointrend_config
 from requests import get
-import cv2
 import numpy as np
-import torch
 
 class FishSegmentationInference:
     MODEL_URL = "https://storage.googleapis.com/fishial-ml-resources/model_15_11_2022.pth"
@@ -62,14 +60,19 @@ class FishSegmentationInference:
 
         complete_mask = np.zeros_like(img[:, :, 0], dtype=np.uint8)
         for idx, mask in enumerate(outputs['instances'].pred_masks):
-            complete_mask += (idx + 1) * mask.cpu()
+            complete_mask += (idx + 1) * mask.cpu().numpy().astype(np.uint8)
         
         return complete_mask
     
 if __name__ == "__main__":
+    import cv2
+    import matplotlib.pyplot as plt
+    import torch
+
     img = cv2.imread("./data/png/P7170081.png")
 
     fish_segmentation_inference = FishSegmentationInference('cuda' if torch.cuda.is_available() else 'cpu')
-    outputs = fish_segmentation_inference.inference(img)
+    mask = fish_segmentation_inference.inference(img)
 
-    print(outputs)
+    plt.imshow(mask)
+    plt.show()
