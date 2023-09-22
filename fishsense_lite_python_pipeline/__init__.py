@@ -3,3 +3,4 @@ from .fish_head_tail_detector import FishHeadTailDetector
 from .image_rectifier import ImageRectifier
 from .laser_detector import LaserDetector
 from .raw_processor import RawProcessor
+from .world_point_handler import WorldPointHandler
