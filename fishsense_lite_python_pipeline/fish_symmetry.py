@@ -44,7 +44,7 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     import torch
 
-    from fish_segmentation_inference import FishSegmentationInference
+    from fishsense_lite_python_pipeline.fish_segmentation_inference import FishSegmentationInference
 
     img = cv2.imread("./data/png/P7170081.png")
 

@@ -10,6 +10,9 @@ import numpy as np
 import rawpy
 
 class RawProcessor:
+    def __init__(self, enable_histogram_equalization=True):
+        self.enable_histogram_equalization = enable_histogram_equalization
+
     def load_and_process(self, path: Path) -> np.ndarray:
         with rawpy.imread(path.as_posix()) as raw:
             return self.process(raw.raw_image.copy())
@@ -20,7 +23,8 @@ class RawProcessor:
         img = self._linearization(img)
         img = self._demosaic(img)
         img = self._grey_world_wb(img)
-        img, _, _ = self._histogram_equalize(img)
+        if self.enable_histogram_equalization:
+            img, _, _ = self._histogram_equalize(img)
 
         return img
     

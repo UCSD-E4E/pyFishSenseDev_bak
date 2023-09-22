@@ -9,7 +9,7 @@ import numpy as np
 
 class FishSegmentationInference:
     MODEL_URL = "https://storage.googleapis.com/fishial-ml-resources/model_15_11_2022.pth"
-    MODEL_PATH = Path("./data/models/model_15_11_2022.pth")
+    MODEL_PATH = Path("./data/models/fishial.pth")
     DECTECTRON2_ZIP_URL = "https://github.com/facebookresearch/detectron2/archive/refs/heads/main.zip"
     DECTECTRON2_ZIP_PATH = Path("./data/detectron2.zip")
     CONFIG_PATH = Path("./data/detectron2/detectron2-main/projects/PointRend/configs/InstanceSegmentation/pointrend_rcnn_R_50_FPN_3x_coco.yaml")
