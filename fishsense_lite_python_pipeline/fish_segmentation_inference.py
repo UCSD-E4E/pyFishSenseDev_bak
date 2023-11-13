@@ -3,7 +3,7 @@ from zipfile import ZipFile
 
 from detectron2.config import get_cfg
 from detectron2.engine import DefaultPredictor
-from projects.PointRend.point_rend import add_pointrend_config
+from detectron2.projects.point_rend import add_pointrend_config
 from requests import get
 import numpy as np
 
