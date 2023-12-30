@@ -41,12 +41,16 @@ class LaserDetector:
             self,
             model_weights_path: Path,
             lens_calibration_path: Path,
-            laser_calibration_path: Path):
+            laser_calibration_path: Path,
+            device: str):
         
         self.calibration_matrix, self.distortion_coeffs = read_camera_calibration(lens_calibration_path.as_posix())
         self.laser_position, self.laser_orientation = read_laser_calibration(laser_calibration_path.as_posix())
         self.model = LaserDetectorNetwork()
         self.model.load_state_dict(torch.load(model_weights_path.as_posix()))
+
+        self.model.to(device)
+        self.device = device
     
     def _get_2d_from_3d(self, vector: np.ndarray) -> np.ndarray:
         homogeneous_coords = vector/vector[2]
@@ -101,7 +105,7 @@ class LaserDetector:
             return masked_image, mask
 
         elif (len(np.shape(img)) == 2):
-            print(np.max(img))
+            # print(np.max(img))
             img_clone = img.copy()
             start_point, end_point = self._return_line()
             cv2.line(img_clone, start_point, end_point, color=0, thickness=75)
@@ -128,14 +132,14 @@ class LaserDetector:
                 coords_buf.append(coordinates[i])
         coordinates = np.asarray(coords_buf)
         img_tiles = np.asarray(buf)
-        print(img_tiles.shape)
+        # print(img_tiles.shape)
         return img_tiles, coordinates
 
     def find_laser(self, img: np.ndarray) -> np.ndarray | None:
         masked_img, _ = self._get_masked_image_matrix(img)
 
         if masked_img is None:
-            print("No local maxima found")
+            # print("No local maxima found")
 
             return None
 
@@ -148,8 +152,8 @@ class LaserDetector:
         if len(tiles) == 0:
             return None
             
-        preds = self.model(torch.Tensor(tiles))
-        possible = F.sigmoid(preds) > .99
+        preds = self.model(torch.Tensor(tiles).to(self.device))
+        possible = (F.sigmoid(preds) > .99).cpu()
         possible_coords = []
 
         for i in range(coords.shape[0]):
@@ -157,7 +161,7 @@ class LaserDetector:
                 possible_coords.append(coords[i,:])
 
         possible_coords = np.array(possible_coords)
-        print(possible_coords.shape)
+        # print(possible_coords.shape)
         # try:
         #     possible_coords = coords[possible.reshape(1, -1)[0]]
 
@@ -165,7 +169,7 @@ class LaserDetector:
         #     possible_coords = coords
 
         if len(possible_coords)==0:
-            print("there are no possible points")
+            # print("there are no possible points")
             
             return None
         
@@ -183,7 +187,7 @@ class LaserDetector:
             # allowed_coords.append(masked_img[coord[0], coord[1]])
 
         if len(allowed_coords) == 0:
-            print("No allowed coords")
+            # print("No allowed coords")
             
             return None
 
