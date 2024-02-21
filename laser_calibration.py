@@ -1,3 +1,4 @@
+from typing import List, Tuple
 import cv2
 import numpy as np
 import csv
@@ -26,7 +27,7 @@ def get_jacobian(
 
 def get_residual(
     points: np.ndarray,
-    state: np.ndarray) -> float:
+    state: np.ndarray) -> np.ndarray:
     laser_pos = np.array([state[3], state[4], 0])
     laser_angle = state[:3]
     est_points = np.linalg.norm(points - laser_pos, axis=1)[:, np.newaxis] * laser_angle + laser_pos
@@ -35,7 +36,7 @@ def get_residual(
 def gauss_newton_estimate_state(
         ps: np.ndarray, 
         init_state: np.ndarray, 
-        num_iterations: int =10) -> np.ndarray:
+        num_iterations: int =10) -> Tuple[np.ndarray, List]:
     state = init_state
     residual_norm_squared = []
     for _ in range(num_iterations):

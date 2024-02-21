@@ -1,10 +1,13 @@
+from typing import Tuple
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 import scipy
 from math import sin, cos
+from array_read_write import read_camera_calibration
 import glob
+from constants import *
 
 def error(img_contour: np.ndarray, slate_contour: np.ndarray):
     return scipy.spatial.distance.cdist(slate_contour.astype(float), img_contour.astype(float)).min(axis=1).mean() ** 2
@@ -47,15 +50,8 @@ def calculate_transform(img_contour: np.ndarray, slate_contour: np.ndarray, angl
 
     return T
 
-def get_slate_transformation(slate_img: np.ndarray, calib_img: np.ndarray): 
-    '''Returns 2D transformation from reference slate to calibration image.
-
-    Inputs; 
-    slate_img: image of the reference slate. Assumed grayscale.
-    calib_img: laser calibration image. Assumed grayscale.
-    '''
-    # get the largest contour from the original slate pdf
-    ret2, slate_threshold = cv2.threshold(slate_img, 100, 255, cv2.THRESH_BINARY_INV)
+def get_slate_contour(slate_img: np.ndarray) -> np.ndarray:
+    _, slate_threshold = cv2.threshold(slate_img, 100, 255, cv2.THRESH_BINARY_INV)
     kernel = np.ones((5,5),np.uint8)
     opened = cv2.morphologyEx(slate_threshold, cv2.MORPH_OPEN, kernel)
     slate_contours, slate_hierarchy = cv2.findContours(opened, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -67,6 +63,17 @@ def get_slate_transformation(slate_img: np.ndarray, calib_img: np.ndarray):
         if area > max_area:
             max_area = area
             slate_contour = c
+    return slate_contour
+
+def get_slate_transformation(slate_img: np.ndarray, calib_img: np.ndarray) -> np.ndarray:
+    '''Returns 2D transformation from reference slate to calibration image.
+
+    Inputs; 
+    slate_img: image of the reference slate. Assumed grayscale.
+    calib_img: laser calibration image. Assumed grayscale.
+    '''
+    # get the largest contour from the original slate pdf
+    slate_contour = get_slate_contour(slate_img)
     display = cv2.drawContours(np.zeros(slate_img.shape), [slate_contour], 0, 255, cv2.FILLED, 8)
 
 
@@ -108,7 +115,6 @@ def get_slate_transformation(slate_img: np.ndarray, calib_img: np.ndarray):
 
     transformed_slate_contour = transformed_slate_contour_one if error_one < error_two else transformed_slate_contour_two
     T = T_one if error_one < error_two else T_two
-    display
 
     display = cv2.drawContours(np.zeros(calib_img.shape), [img_contour], 0, 255, cv2.FILLED, 8)
     pdf_display = cv2.drawContours(np.zeros(calib_img.shape), [homo2contour(transformed_slate_contour)], 0, 255, cv2.FILLED, 8)
@@ -117,11 +123,11 @@ def get_slate_transformation(slate_img: np.ndarray, calib_img: np.ndarray):
 
     return T
 
-
-
-def get_field_calibration(ref_img_path: str, img_folder_path: str): 
+def get_dive_slate_pose(ref_img_path: str, img_folder_path: str, camera_calib_path: str) -> Tuple[np.ndarray, np.ndarray]:
     '''Returns laser parameters for a given reference image and a list of images
     '''
+
+    camera_mat, dist_coeffs = read_camera_calibration(camera_calib_path)
 
     glob_list = glob.glob(img_folder_path + '*.PNG')
     glob_list.sort()
@@ -129,11 +135,28 @@ def get_field_calibration(ref_img_path: str, img_folder_path: str):
     print(test_img)
     test_img = cv2.imread(Path(test_img).absolute().as_posix(), cv2.IMREAD_GRAYSCALE)
 
+
     slate_img = cv2.imread(Path(ref_img_path).absolute().as_posix(), cv2.IMREAD_GRAYSCALE)
     T = get_slate_transformation(slate_img, test_img)
-    return None, None
+
+    # get points from the reference slate
+    slate_points = get_slate_contour(slate_img)
+    slate_height, _, _ = slate_points.shape
+    slate_contour_homo = np.zeros((slate_height, 3), dtype=float)
+    slate_contour_homo[:, :2] = slate_points.squeeze(1)
+    slate_contour_obj = slate_contour_homo
+    slate_contour_obj[:2] = 0
+
+    transformed_points_homo = T @ slate_contour_homo.T
+    transformed_points = transformed_points_homo[...,:2]/transformed_points_homo[...,2]
+
+    empty_dist_coeffs=  np.zeros((5,))
+    ret, rvecs, tvecs = cv2.solvePnP(slate_contour, transformed_points, camera_mat, empty_dist_coeffs)
+
+    return rvecs, tvecs
 
 if __name__ == "__main__":
     slate_path = "./data-8-3-florida/png_rectified/slate/slate.jpg"
     image_folder_path = "./data-8-3-florida/png_rectified/H slate dive 3/"
-    get_field_calibration(slate_path, image_folder_path)
+    camera_calib_path = ""
+    r, t = get_dive_slate_pose(slate_path, image_folder_path, camera_calib_path)
