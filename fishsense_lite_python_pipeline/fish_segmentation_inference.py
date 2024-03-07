@@ -66,11 +66,11 @@ class FishSegmentationInference:
 
         return np.asarray(pil_image)
     
-    def __convert_output_to_mask_and_polygons(self, mask_rcnn_output, np_img_resized, scales):
+    def __convert_output_to_mask_and_polygons(self, mask_rcnn_output, np_img_resized, scales, img):
 
         def rescale_polygon_to_src_size(poly, start_pont, scales):
-            return [[int((start_pont[0] + point[0]) * scales[0]), 
-                     int((start_pont[1] + point[1]) * scales[1])] for point in poly]
+            return [(int((start_pont[0] + point[0]) * scales[0]), 
+                     int((start_pont[1] + point[1]) * scales[1])) for point in poly]
         
         def do_paste_mask(masks, img_h: int, img_w: int):
             """
@@ -137,7 +137,7 @@ class FishSegmentationInference:
             return sorted(contours, key=len, reverse = True)
 
         boxes, classes, masks, scores, img_size = mask_rcnn_output
-        processed = []
+        complete_mask = np.zeros_like(img, dtype=np.uint8)
 
         for ind in range(len(masks)):
             if scores[ind] <= self.SCORE_THRESHOLD: continue
@@ -161,8 +161,8 @@ class FishSegmentationInference:
             # Convert local polygon to src image
             polygon_full = rescale_polygon_to_src_size(contours[0], (x1, y1), scales)
 
-            processed.append([res, polygon_full])
-        return processed
+            complete_mask = cv2.fillPoly(complete_mask, [np.array(polygon_full)], (ind + 1, ind + 1, ind + 1))
+        return complete_mask
     
     def __process_output(self, output):
         
@@ -231,10 +231,9 @@ class FishSegmentationInference:
         tensor_img = torch.Tensor(resized_img.astype("float32").transpose(2, 0, 1)).to(self.device)
 
         segm_output = self.model(tensor_img)
-        mask_and_poly = self.__convert_output_to_mask_and_polygons(segm_output, resized_img, scales)
-        polygons, masks = self.__process_output(mask_and_poly)
+        complete_mask = self.__convert_output_to_mask_and_polygons(segm_output, resized_img, scales, img)
         
-        return polygons, masks
+        return complete_mask[:, :, 0]
     
 if __name__ == "__main__":
     import cv2
@@ -244,7 +243,7 @@ if __name__ == "__main__":
     img = cv2.imread("./data/P7170081.JPG")
 
     fish_segmentation_inference = FishSegmentationInference('cuda' if torch.cuda.is_available() else 'cpu')
-    polygon, mask = fish_segmentation_inference.inference(img)
+    mask = fish_segmentation_inference.inference(img)
 
-    plt.imshow(mask[0])
+    plt.imshow(mask)
     plt.show()
