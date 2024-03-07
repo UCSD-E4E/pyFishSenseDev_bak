@@ -165,65 +165,6 @@ class FishSegmentationInference:
             complete_mask = cv2.fillPoly(complete_mask, [np.array(polygon_full)], (ind + 1, ind + 1, ind + 1))
         return complete_mask
     
-    def __process_output(self, output):
-        
-        def is_valid_polygon(polygon_array):
-            try:
-                Polygon(polygon_array)
-                return True
-            except Exception as e:
-                logging.info(f"[PROCESSING][SEGMENTATION] polygon is broken for current mask - skip it: {e}")
-                return False
-
-        poly_instances = [[Polygon(polygon_array), polygon_array, mask] for mask, polygon_array in output if is_valid_polygon(polygon_array)]
-        
-        poly_instances = sorted(poly_instances, key=lambda x: x[0].area, reverse=True)
-        # Create a list of indices to keep
-        keep_indices = [0]
-
-        for i in range(1, len(poly_instances)):
-            keep = True
-            for j in keep_indices:
-                keep = self.__filter_by_iou_threshold(poly_instances[i][0], poly_instances[j][0])
-            if keep:
-                keep_indices.append(i)
-
-        logging.info(f"[PROCESSING][SEGMENTATION] After applying custom NMS method removed N = {(len(poly_instances) - len(keep_indices))} indexes")
-        
-        polygons = [self.__poly_array_to_dict(poly_instances[i][1]) for i in keep_indices]
-        masks = [poly_instances[i][2] for i in keep_indices]
-        
-        return polygons, masks
-    
-    def __poly_array_to_dict(self, poly):
-        polygons_dict = {}
-        for i in range(len(poly)):
-            polygons_dict.update({
-                "x{}".format(i + 1): poly[i][0],
-                "y{}".format(i + 1): poly[i][1]
-            })
-        return polygons_dict
-    
-    def __filter_by_iou_threshold(self, poly_a, poly_b):
-        """
-        Checks if the two given polygons intersect.
-
-        Args:
-            - poly_a: shapely.geometry.Polygon, first polygon
-            - poly_b: shapely.geometry.Polygon, second polygon
-            - threshold: float, threshold above which the polygons intersect
-
-        Returns:
-            - True if the polygons intersect, False otherwise
-        """
-        intersection_area = poly_a.intersection(poly_b).area
-        union_area = poly_a.union(poly_b).area
-
-        iou = intersection_area / union_area
-        if iou > self.NMS_THRESHOLD:
-            return False
-        return True
-
     def inference(self, img: np.ndarray) -> np.ndarray:
         resized_img = self.__resize_img(img)
         #get scales of x&y after scaling
