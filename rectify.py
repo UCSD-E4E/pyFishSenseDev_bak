@@ -3,7 +3,7 @@ from pathlib import Path
 from tqdm import tqdm
 import cv2
 
-from pyFishSense import FishHeadTailDetector, FishSegmentationInference, ImageRectifier, LaserDetector, RawProcessor, WorldPointHandler
+from pyfishsense import FishHeadTailDetector, FishSegmentationInference, ImageRectifier, LaserDetector, RawProcessor, WorldPointHandler
 
 def process(input_file: str):
     lens_calibration_path = Path("./data/fsl-07d-lens-raw.pkg")

@@ -102,10 +102,10 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     import torch
 
-    from pyFishSense.fish_segmentation_inference import FishSegmentationInference
-    from pyFishSense.laser_detector import LaserDetector
-    from pyFishSense.image_rectifier import ImageRectifier
-    from pyFishSense.raw_processor import RawProcessor
+    from pyfishsense.fish_segmentation_inference import FishSegmentationInference
+    from pyfishsense.laser_detector import LaserDetector
+    from pyfishsense.image_rectifier import ImageRectifier
+    from pyfishsense.raw_processor import RawProcessor
 
     raw_processor = RawProcessor()
     raw_processor_dark = RawProcessor(enable_histogram_equalization=False)
