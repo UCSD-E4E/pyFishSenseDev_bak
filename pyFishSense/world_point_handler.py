@@ -3,9 +3,9 @@ from typing import Tuple
 
 import numpy as np
 
-from fishsense_lite_python_pipeline.library.array_read_write import read_camera_calibration, read_laser_calibration
-from fishsense_lite_python_pipeline.library.constants import PIXEL_PITCH_MM
-from fishsense_lite_python_pipeline.library.laser_parallax import compute_world_point, compute_world_point_from_depth
+from pyFishSense.library.array_read_write import read_camera_calibration, read_laser_calibration
+from pyFishSense.library.constants import PIXEL_PITCH_MM
+from pyFishSense.library.laser_parallax import compute_world_point, compute_world_point_from_depth
 
 class WorldPointHandler:
     def __init__(self, lens_calibration_path: Path, laser_calibration_path: Path):

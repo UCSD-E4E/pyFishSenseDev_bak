@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import torch
 
-from fishsense_lite_python_pipeline import FishHeadTailDetector, FishSegmentationInference, ImageRectifier, LaserDetector, RawProcessor, WorldPointHandler
+from pyFishSense import FishHeadTailDetector, FishSegmentationInference, ImageRectifier, LaserDetector, RawProcessor, WorldPointHandler
 
 dives = ["MolHITW", "MolPeLe", "ConchLed", "dive 1", "dive 3", "dive 4"]
 

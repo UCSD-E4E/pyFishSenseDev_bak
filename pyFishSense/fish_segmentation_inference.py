@@ -1,9 +1,7 @@
-import logging
 from pathlib import Path
 
 from PIL import Image
 from requests import get
-from shapely.geometry import Polygon
 from torch.nn import functional as F
 import cv2
 import numpy as np
