@@ -46,6 +46,33 @@ def gauss_newton_estimate_state(
         state = temp_state
     return state, residual_norm_squared
 
+def atanasov_method(
+        ps: np.ndarray
+):
+    '''
+    Nikolay's method for laser calibration.
+    Inputs:
+     - ps: the laser points
+    Output: the 5-vector of the laser parameters, with the first 3 being the orientation,
+            and the final two being the x and y coordinates of the laser origin
+    '''
+    avg_alpha = np.zeros((3,))
+    params = np.zeros((5,))
+    for i in range(ps.shape[0]):
+        for j in range(i, ps.shape[0]):
+            v = ps[i] - ps[j]
+            avg_alpha += v/np.linalg.norm(v)
+
+    avg_alpha /= np.linalg.norm(avg_alpha)
+    if avg_alpha[2] < 0:
+        avg_alpha = -avg_alpha
+
+    centroid = np.mean(ps,axis=0)
+    scale_factor = centroid[2]/avg_alpha[2]
+    params[3:5] = centroid[0:2] - scale_factor * avg_alpha[0:2]
+    return params
+
+
 def prep_args() -> argparse.ArgumentParser: 
     parser = argparse.ArgumentParser(prog='laser_calibration',
                                      description='Given a CSV of images file names and laser dot coordinates, generate laser calibration parameters'
@@ -53,6 +80,7 @@ def prep_args() -> argparse.ArgumentParser:
     parser.add_argument('-c', '--calib', help='Camera calibration file', dest='camera_calib_path', required=True)
     parser.add_argument('-i', '--input', help='Input csv file', dest='csv_path', required=True)
     parser.add_argument('-o', '--output', help='Output destination and file name', dest='dest_path', required=True)
+    parser.add_argument('--usegn', help="Use Gauss-Newton optimization, otherwise will default to naive approach", action=argparse.BooleanOptionalAction, dest='use_gn')
     return parser
 
 # return the depths
@@ -132,13 +160,17 @@ if __name__ == "__main__":
     ps = np.array(ps)
     
     # use list of laser dot coordinates to calibrate laser
-    state_init = np.array([0,0,1,-0.04,-0.11])
-    state, _ = gauss_newton_estimate_state(ps, state_init)
+    if use_gn:
+        state_init = np.array([0,0,1,-0.04,-0.11])
+        state, _ = gauss_newton_estimate_state(ps, state_init)
+    else:
+        state = atanasov_method(ps)
 
     # save the states to a file
     laser_axis = state[:3]
     laser_pos = np.zeros((3,))
     laser_pos[:2] = state[3:5]
+
     print(f"Resulting axis and position: {laser_axis}, {laser_pos}")
 
     write_laser_calibration(args.dest_path, laser_axis, laser_pos)
