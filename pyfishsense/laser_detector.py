@@ -214,7 +214,7 @@ class LaserDetector:
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
-    from pyfishsense.raw_processor import RawProcessor
+    from pyfishsense.image_processors.raw_processor import RawProcessor
     from pyfishsense.image_rectifier import ImageRectifier
 
     raw_processor = RawProcessor()
