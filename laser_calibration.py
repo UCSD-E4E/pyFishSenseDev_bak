@@ -59,9 +59,10 @@ def atanasov_method(
     avg_alpha = np.zeros((3,))
     params = np.zeros((5,))
     for i in range(ps.shape[0]):
-        for j in range(i, ps.shape[0]):
-            v = ps[i] - ps[j]
-            avg_alpha += v/np.linalg.norm(v)
+        for j in range(ps.shape[0]):
+            if i != j:
+                v = ps[i] - ps[j]
+                avg_alpha += v/np.linalg.norm(v)
 
     avg_alpha /= np.linalg.norm(avg_alpha)
     if avg_alpha[2] < 0:
@@ -69,6 +70,7 @@ def atanasov_method(
 
     centroid = np.mean(ps,axis=0)
     scale_factor = centroid[2]/avg_alpha[2]
+    params[0:3] = avg_alpha
     params[3:5] = centroid[0:2] - scale_factor * avg_alpha[0:2]
     return params
 
@@ -150,17 +152,16 @@ if __name__ == "__main__":
     # distance_list = []
     idxs = list(enumerate(file_list))[0]
     pool_args = [(i, file_list[i], img_coords[i], camera_mat, focal_length_mm, principal_point) for i in range(len(file_list))]
-    with Pool(processes=1) as pool:
+    with Pool(processes=4) as pool:
         result = list(tqdm(pool.imap(find_laser_depth, pool_args), total=len(file_list)))
     result = [(idx, point) for idx, point in result if idx is not None and point is not None]
 
     combined_result = list(zip(*result))
-    combined_result.sort(key=lambda x: x[0])
     _, ps = combined_result
     ps = np.array(ps)
     
     # use list of laser dot coordinates to calibrate laser
-    if use_gn:
+    if args.use_gn:
         state_init = np.array([0,0,1,-0.04,-0.11])
         state, _ = gauss_newton_estimate_state(ps, state_init)
     else:
