@@ -3,7 +3,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-from pyFishSense.library.array_read_write import read_camera_calibration
+from pyfishsense.library.array_read_write import read_camera_calibration
 
 class ImageRectifier:
     def __init__(self, lens_calibration_path: Path):
