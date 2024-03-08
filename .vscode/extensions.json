@@ -1,6 +1,12 @@
 {
     "recommendations": [
+        "ms-python.vscode-pylance",
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "njpwerner.autodocstring",
+        "ms-python.isort",
         "eamodio.gitlens",
-        "ms-python.python"
+        "VisualStudioExptTeam.vscodeintellicode",
+        "ms-python.black-formatter"
     ]
 }
