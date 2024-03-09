@@ -213,3 +213,6 @@ poetry.toml
 
 data/
 *.dat
+*.pkg
+
+*.pth

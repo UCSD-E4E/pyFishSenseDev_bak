@@ -44,11 +44,17 @@ class LaserDetectorNetwork(nn.Module):
 class LaserDetector:
     def __init__(
         self,
-        model_weights_path: Path,
         lens_calibration_path: Path,
         laser_calibration_path: Path,
         device: str,
+        model_weights_path: Path = None,
     ):
+        if model_weights_path is None:
+            model_weights_path = (
+                Path(__file__).parent.resolve().parent
+                / "models"
+                / "laser_detection.pth"
+            )
 
         self.calibration_matrix, self.distortion_coeffs = read_camera_calibration(
             lens_calibration_path.as_posix()
