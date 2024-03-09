@@ -62,7 +62,8 @@ def atanasov_method(
         for j in range(ps.shape[0]):
             if i != j:
                 v = ps[i] - ps[j]
-                avg_alpha += v/np.linalg.norm(v)
+                if v[2] < 0: v = -v
+                avg_alpha += v
 
     avg_alpha /= np.linalg.norm(avg_alpha)
     if avg_alpha[2] < 0:
