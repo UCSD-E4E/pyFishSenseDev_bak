@@ -51,9 +51,7 @@ class LaserDetector:
     ):
         if model_weights_path is None:
             model_weights_path = (
-                Path(__file__).parent.resolve().parent
-                / "models"
-                / "laser_detection.pth"
+                Path(__file__).parent.resolve() / "models" / "laser_detection.pth"
             )
 
         self.calibration_matrix, self.distortion_coeffs = read_camera_calibration(
