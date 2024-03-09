@@ -4,9 +4,10 @@ from typing import Tuple
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 class FishHeadTailDetector:
     def find_head_tail(self, mask: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-        
+
         y, x = mask.nonzero()
         x_min, x_max, y_min, y_max = [x.min(), x.max(), y.min(), y.max()]
 
@@ -31,17 +32,11 @@ class FishHeadTailDetector:
 
         scale = height if height > width else width
 
-        coord1 = np.array([
-            -x_v1*scale*2,
-            -y_v1*scale*2
-        ])
+        coord1 = np.array([-x_v1 * scale * 2, -y_v1 * scale * 2])
 
-        coord2 = np.array([
-            x_v1*scale*2,
-            y_v1*scale*2
-        ])
+        coord2 = np.array([x_v1 * scale * 2, y_v1 * scale * 2])
 
-        extent = [x.min(), x.max(), y.min(), y.max()] 
+        extent = [x.min(), x.max(), y.min(), y.max()]
 
         # min_x = coord1[0] if coord1[0] < coord2[0] else coord2[0]
         # min_y = coord1[1] if coord1[1] < coord2[1] else coord2[1]
@@ -82,7 +77,7 @@ class FishHeadTailDetector:
         points_along_line = np.where(np.abs(y - y_target) < 1)
         x = x[points_along_line]
         y = y[points_along_line]
-        
+
         coords = np.stack([x, y])
         left_coord = coords[:, np.argmin(x)]
         right_coord = coords[:, np.argmax(x)]
@@ -97,15 +92,16 @@ class FishHeadTailDetector:
 
         return left_coord, right_coord
 
+
 if __name__ == "__main__":
     import cv2
     import matplotlib.pyplot as plt
     import torch
 
     from pyfishsense.fish_segmentation_inference import FishSegmentationInference
-    from pyfishsense.laser_detector import LaserDetector
-    from pyfishsense.image_rectifier import ImageRectifier
     from pyfishsense.image_processors.raw_processor import RawProcessor
+    from pyfishsense.image_rectifier import ImageRectifier
+    from pyfishsense.laser_detector import LaserDetector
 
     raw_processor = RawProcessor()
     raw_processor_dark = RawProcessor(enable_histogram_equalization=False)
@@ -113,18 +109,21 @@ if __name__ == "__main__":
     laser_detector = LaserDetector(
         Path("./data/models/laser_detection.pth"),
         Path("./data/lens-calibration.pkg"),
-        Path("./data/laser-calibration.pkg"))
+        Path("./data/laser-calibration.pkg"),
+    )
 
     img = raw_processor.load_and_process(Path("./data/P8030201.ORF"))
     img_dark = raw_processor_dark.load_and_process(Path("./data/P8030201.ORF"))
     img = image_rectifier.rectify(img)
     img_dark = image_rectifier.rectify(img_dark)
 
-    img8 = ((img.astype('float64') / 65535) * 255).astype('uint8')
-    img_dark8 = ((img_dark.astype('float64') / 65535) * 255).astype('uint8')
+    img8 = ((img.astype("float64") / 65535) * 255).astype("uint8")
+    img_dark8 = ((img_dark.astype("float64") / 65535) * 255).astype("uint8")
     coords = laser_detector.find_laser(img_dark8)
 
-    fish_segmentation_inference = FishSegmentationInference('cuda' if torch.cuda.is_available() else 'cpu')
+    fish_segmentation_inference = FishSegmentationInference(
+        "cuda" if torch.cuda.is_available() else "cpu"
+    )
     segmentations = fish_segmentation_inference.inference(img8)
 
     mask = np.zeros_like(segmentations, dtype=bool)
@@ -134,6 +133,6 @@ if __name__ == "__main__":
     left_coord, right_coord = fish_head_tail_detector.find_head_tail(mask, img8)
 
     plt.imshow(img8)
-    plt.plot(left_coord[0], left_coord[1], 'r.')
-    plt.plot(right_coord[0], right_coord[1], 'b.')
+    plt.plot(left_coord[0], left_coord[1], "r.")
+    plt.plot(right_coord[0], right_coord[1], "b.")
     plt.show()
