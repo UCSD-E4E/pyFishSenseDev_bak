@@ -61,7 +61,9 @@ class LaserDetector:
             laser_calibration_path.as_posix()
         )
         self.model = LaserDetectorNetwork()
-        self.model.load_state_dict(torch.load(model_weights_path.as_posix()))
+        self.model.load_state_dict(
+            torch.load(model_weights_path.as_posix(), map_location=device)
+        )
 
         self.model.to(device)
         self.device = device
