@@ -96,8 +96,6 @@ class FishSegmentationInference:
                 if skip_empty == True, a mask of shape (N, h', w'), and the slice
                     object for the corresponding region.
             """
-            device = masks.device
-
             x0_int, y0_int = 0, 0
             x1_int, y1_int = img_w, img_h
             x0, y0, x1, y1 = (
@@ -110,10 +108,12 @@ class FishSegmentationInference:
             N = masks.shape[0]
 
             img_y = (
-                torch.arange(y0_int, y1_int, device=device, dtype=torch.float32) + 0.5
+                torch.arange(y0_int, y1_int, device=self.device, dtype=torch.float32)
+                + 0.5
             )
             img_x = (
-                torch.arange(x0_int, x1_int, device=device, dtype=torch.float32) + 0.5
+                torch.arange(x0_int, x1_int, device=self.device, dtype=torch.float32)
+                + 0.5
             )
             img_y = (img_y - y0) / (y1 - y0) * 2 - 1
             img_x = (img_x - x0) / (x1 - x0) * 2 - 1
