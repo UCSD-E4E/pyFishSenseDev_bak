@@ -22,9 +22,7 @@ class FishSegmentationInference:
         self.model_path = self.__download_file(
             FishSegmentationInference.MODEL_URL, FishSegmentationInference.MODEL_PATH
         ).as_posix()
-        self.model = torch.jit.load(self.model_path, map_location=device)
-        self.model.eval()
-        self.model = self.model.to(device)
+        self.model = torch.jit.load(self.model_path).to(device).eval()
 
         self.MIN_SIZE_TEST = 800
         self.MAX_SIZE_TEST = 1333
@@ -99,10 +97,10 @@ class FishSegmentationInference:
             x0_int, y0_int = 0, 0
             x1_int, y1_int = img_w, img_h
             x0, y0, x1, y1 = (
-                torch.Tensor([[0]]),
-                torch.Tensor([[0]]),
-                torch.Tensor([[img_w]]),
-                torch.Tensor([[img_h]]),
+                torch.tensor([[0]], device=self.device),
+                torch.tensor([[0]], device=self.device),
+                torch.tensor([[img_w]], device=self.device),
+                torch.tensor([[img_h]], device=self.device),
             )
 
             N = masks.shape[0]
@@ -120,7 +118,7 @@ class FishSegmentationInference:
             # img_x, img_y have shapes (N, w), (N, h)
             gx = img_x[:, None, :].expand(N, img_y.size(1), img_x.size(1))
             gy = img_y[:, :, None].expand(N, img_y.size(1), img_x.size(1))
-            grid = torch.stack([gx, gy], dim=3)
+            grid = torch.stack([gx, gy], dim=3).to(self.device)
 
             resized_mask = F.grid_sample(
                 masks, grid.to(masks.dtype), align_corners=False
@@ -157,6 +155,7 @@ class FishSegmentationInference:
             return sorted(contours, key=len, reverse=True)
 
         boxes, classes, masks, scores, img_size = mask_rcnn_output
+        masks = masks.to(self.device)
         complete_mask = np.zeros_like(img, dtype=np.uint8)
 
         for ind in range(len(masks)):
@@ -170,9 +169,11 @@ class FishSegmentationInference:
             )
             mask_h, mask_w = y2 - y1, x2 - x1
 
-            np_mask = do_paste_mask(masks[ind, None, :, :], mask_h, mask_w).numpy()[0][
-                0
-            ]
+            np_mask = (
+                do_paste_mask(masks[ind, None, :, :], mask_h, mask_w)
+                .cpu()
+                .numpy()[0][0]
+            )
 
             # Threshold the mask converting to uint8 casuse opencv diesn't allow other type!
             np_mask = np.where(np_mask > self.MASK_THRESHOLD, 255, 0).astype(np.uint8)
