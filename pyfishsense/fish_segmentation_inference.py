@@ -24,7 +24,7 @@ class FishSegmentationInference:
         ).as_posix()
         self.model = torch.jit.load(self.model_path, map_location=device)
         self.model.eval()
-        self.model.to(device)
+        self.model = self.model.to(device)
 
         self.MIN_SIZE_TEST = 800
         self.MAX_SIZE_TEST = 1333
