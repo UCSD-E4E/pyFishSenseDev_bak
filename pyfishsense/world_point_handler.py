@@ -19,7 +19,7 @@ class WorldPointHandler:
     def calibration_matrix(self) -> np.ndarray:
         return self._calibration_matrix
 
-    @property.setter
+    @calibration_matrix.setter
     def calibration_matrix(self, calibration_matrix: np.ndarray):
         self._calibration_matrix = calibration_matrix
 
@@ -27,7 +27,7 @@ class WorldPointHandler:
     def distortion_coeffs(self) -> np.ndarray:
         return self._distortion_coeffs
 
-    @property.setter
+    @distortion_coeffs.setter
     def distortion_coeffs(self, distortion_coeffs: np.ndarray):
         self._distortion_coeffs = distortion_coeffs
 
@@ -35,7 +35,7 @@ class WorldPointHandler:
     def laser_position(self) -> np.ndarray:
         return self._laser_position
 
-    @property.setter
+    @laser_position.setter
     def laser_position(self, laser_position: np.ndarray):
         self._laser_position = laser_position
 
@@ -43,7 +43,7 @@ class WorldPointHandler:
     def laser_orientation(self) -> np.ndarray:
         return self._laser_orientation
 
-    @property.setter
+    @laser_orientation.setter
     def laser_orientation(self, laser_orientation: np.ndarray):
         self._laser_orientation = laser_orientation
 
