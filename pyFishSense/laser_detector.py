@@ -8,7 +8,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from fishsense_lite_python_pipeline.library.array_read_write import read_camera_calibration, read_laser_calibration
+from pyFishSense.library.array_read_write import read_camera_calibration, read_laser_calibration
 
 class LaserDetectorNetwork(nn.Module):
     def __init__(self):
@@ -214,8 +214,8 @@ class LaserDetector:
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
-    from fishsense_lite_python_pipeline.raw_processor import RawProcessor
-    from fishsense_lite_python_pipeline.image_rectifier import ImageRectifier
+    from pyFishSense.raw_processor import RawProcessor
+    from pyFishSense.image_rectifier import ImageRectifier
 
     raw_processor = RawProcessor()
     raw_processor_dark = RawProcessor(enable_histogram_equalization=False)
