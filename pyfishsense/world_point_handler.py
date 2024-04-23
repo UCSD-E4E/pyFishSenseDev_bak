@@ -15,11 +15,43 @@ from pyfishsense.library.laser_parallax import (
 
 
 class WorldPointHandler:
+    @property
+    def calibration_matrix(self) -> np.ndarray:
+        return self._calibration_matrix
+
+    @calibration_matrix.setter
+    def calibration_matrix(self, calibration_matrix: np.ndarray):
+        self._calibration_matrix = calibration_matrix
+
+    @property
+    def distortion_coeffs(self) -> np.ndarray:
+        return self._distortion_coeffs
+
+    @distortion_coeffs.setter
+    def distortion_coeffs(self, distortion_coeffs: np.ndarray):
+        self._distortion_coeffs = distortion_coeffs
+
+    @property
+    def laser_position(self) -> np.ndarray:
+        return self._laser_position
+
+    @laser_position.setter
+    def laser_position(self, laser_position: np.ndarray):
+        self._laser_position = laser_position
+
+    @property
+    def laser_orientation(self) -> np.ndarray:
+        return self._laser_orientation
+
+    @laser_orientation.setter
+    def laser_orientation(self, laser_orientation: np.ndarray):
+        self._laser_orientation = laser_orientation
+
     def __init__(self, lens_calibration_path: Path, laser_calibration_path: Path):
-        self.calibration_matrix, self.distortion_coeffs = read_camera_calibration(
+        self._calibration_matrix, self._distortion_coeffs = read_camera_calibration(
             lens_calibration_path.as_posix()
         )
-        self.laser_position, self.laser_orientation = read_laser_calibration(
+        self._laser_position, self._laser_orientation = read_laser_calibration(
             laser_calibration_path.as_posix()
         )
 
