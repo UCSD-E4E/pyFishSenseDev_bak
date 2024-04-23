@@ -1,17 +1,18 @@
-from glob import glob
-from multiprocessing import Pool, cpu_count
 from pathlib import Path
 from typing import Tuple
-import os
 
-from tqdm import tqdm
 import cv2
 import numpy as np
 import rawpy
 
-class RawProcessor:
+from pyfishsense.image_processors.image_processor import ImageProcessor
+
+
+class RawProcessor(ImageProcessor):
     def __init__(self, enable_histogram_equalization=True):
         self.enable_histogram_equalization = enable_histogram_equalization
+
+        super().__init__()
 
     def load_and_process(self, path: Path) -> np.ndarray:
         with rawpy.imread(path.as_posix()) as raw:
@@ -27,17 +28,18 @@ class RawProcessor:
             img, _, _ = self._histogram_equalize(img)
 
         return img
-    
+
     def _demosaic(self, img: np.ndarray) -> np.ndarray:
-        img = cv2.demosaicing(img, cv2.COLOR_BayerGB2BGR) 
-        return img
-        
+        return cv2.demosaicing(img, cv2.COLOR_BayerGB2BGR)
+
     def _linearization(self, img: np.ndarray) -> np.ndarray:
         img[img > 65000] = img.min()
-        img = ((img - img.min()) * (1/(img.max() - img.min()) * 65535)).astype(np.uint16)
+        img = ((img - img.min()) * (1 / (img.max() - img.min()) * 65535)).astype(
+            np.uint16
+        )
 
         return img
-    
+
     def _grey_world_wb(self, img: np.ndarray) -> np.ndarray:
         b, g, r = cv2.split(img)
         r_avg = cv2.mean(r)[0]
@@ -46,7 +48,7 @@ class RawProcessor:
 
         kr = g_avg / r_avg
         kg = 1
-        kb = g_avg / b_avg  
+        kb = g_avg / b_avg
 
         r = cv2.addWeighted(src1=r, alpha=kr, src2=0, beta=0, gamma=0)
         g = cv2.addWeighted(src1=g, alpha=kg, src2=0, beta=0, gamma=0)
@@ -77,55 +79,56 @@ class RawProcessor:
         # Filling it back with zeros
         cdf = np.ma.filled(cdf_m, 0)
 
-
         # Creating the new image based on the new cdf
-        imgEq = cdf[img.astype('uint16')]
-        histEq, bins2 = np.histogram(imgEq.flatten(), 65536, [0, 65536])
+        imgEq = cdf[img.astype("uint16")]
+        histEq, _ = np.histogram(imgEq.flatten(), 65536, [0, 65536])
 
         return imgEq, histOrig, histEq
 
-    def _histogram_equalize(self, imgOrig: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def _histogram_equalize(
+        self, imgOrig: np.ndarray
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
-            Equalizes the histogram of an image
-            The function will fist check if the image is RGB or gray scale
-            If the image is gray scale will equalizes
-            If RGB will first convert to YIQ then equalizes the Y level
-            :param imgOrig: Original Histogram
-            :return: imgnew -> image after equalization, hist-> original histogram, histnew -> new histogram
+        Equalizes the histogram of an image
+        The function will fist check if the image is RGB or gray scale
+        If the image is gray scale will equalizes
+        If RGB will first convert to YIQ then equalizes the Y level
+        :param imgOrig: Original Histogram
+        :return: imgnew -> image after equalization, hist-> original histogram, histnew -> new histogram
         """
 
         if len(imgOrig.shape) == 2:
-
             img = imgOrig * 65536
             imgEq, histOrig, histEq = self._hist_eq(img)
 
         else:
             img = imgOrig
-            # img = cv.cvtColor(imgOrig, cv.COLOR_BGR2HSV)
             img[:, :, 0], histOrig, histEq = self._hist_eq(img[:, :, 0])
             img[:, :, 1], histOrig, histEq = self._hist_eq(img[:, :, 1])
             img[:, :, 2], histOrig, histEq = self._hist_eq(img[:, :, 2])
-            # imgEq = cv.cvtColor(img, cv.COLOR_HSV2BGR)
             imgEq = img
 
         return imgEq, histOrig, histEq
-    
+
+
 if __name__ == "__main__":
+    import os
+    from glob import glob
+    from multiprocessing import Pool, cpu_count
+
+    from tqdm import tqdm
+
     def process(raw: str):
         new_path = raw.replace("raw", "png").replace(".ORF", ".png")
         os.makedirs(os.path.dirname(new_path), exist_ok=True)
 
         if os.path.exists(new_path):
             return
-        
+
         raw_processor = RawProcessor()
 
-        # tifffile.imwrite(new_path, cv2.cvtColor(img1_data, cv2.COLOR_BGR2RGB), compression="zlib", compressionargs={'level': 9})
         cv2.imwrite(new_path, raw_processor.load_and_process(Path(raw)))
 
     raw_images = glob("./data/raw/**/*.ORF", recursive=True)
     raw_images.sort()
     list(tqdm(Pool(cpu_count()).imap(process, raw_images), total=len(raw_images)))
-
-    # for image in tqdm(raw_images):
-    #     process(image)
