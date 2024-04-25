@@ -3,12 +3,12 @@ from typing import Tuple
 
 import numpy as np
 
-from pyfishsense.library.array_read_write import (
+from pyfishsensedev.library.array_read_write import (
     read_camera_calibration,
     read_laser_calibration,
 )
-from pyfishsense.library.constants import PIXEL_PITCH_MM
-from pyfishsense.library.laser_parallax import (
+from pyfishsensedev.library.constants import PIXEL_PITCH_MM
+from pyfishsensedev.library.laser_parallax import (
     compute_world_point,
     compute_world_point_from_depth,
 )

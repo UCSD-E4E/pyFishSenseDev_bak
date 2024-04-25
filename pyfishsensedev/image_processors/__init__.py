@@ -1,1 +1,1 @@
-from pyfishsense.image_processors.raw_processor import RawProcessor
+from pyfishsensedev.image_processors.raw_processor import RawProcessor

@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import rawpy
 
-from pyfishsense.image_processors.image_processor import ImageProcessor
+from pyfishsensedev.image_processors.image_processor import ImageProcessor
 
 
 class RawProcessor(ImageProcessor):
