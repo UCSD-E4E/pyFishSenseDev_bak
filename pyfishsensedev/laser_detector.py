@@ -8,7 +8,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from skimage.feature import peak_local_max
 
-from pyfishsense.library.array_read_write import (
+from pyfishsensedev.library.array_read_write import (
     read_camera_calibration,
     read_laser_calibration,
 )
@@ -208,8 +208,8 @@ class LaserDetector:
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
-    from pyfishsense.image_processors.raw_processor import RawProcessor
-    from pyfishsense.image_rectifier import ImageRectifier
+    from pyfishsensedev.image_processors.raw_processor import RawProcessor
+    from pyfishsensedev.image_rectifier import ImageRectifier
 
     raw_processor = RawProcessor()
     raw_processor_dark = RawProcessor(enable_histogram_equalization=False)
