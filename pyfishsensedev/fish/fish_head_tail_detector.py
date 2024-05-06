@@ -100,8 +100,8 @@ if __name__ == "__main__":
 
     from pyfishsensedev.fish_segmentation_inference import FishSegmentationInference
     from pyfishsensedev.image_processors.raw_processor import RawProcessor
-    from pyfishsensedev.image_rectifier import ImageRectifier
-    from pyfishsensedev.laser_detector import LaserDetector
+    from pyfishsensedev.image.image_rectifier import ImageRectifier
+    from pyfishsensedev.laser.laser_detector import LaserDetector
 
     raw_processor = RawProcessor()
     raw_processor_dark = RawProcessor(enable_histogram_equalization=False)

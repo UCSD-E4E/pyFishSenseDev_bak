@@ -209,7 +209,7 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
     from pyfishsensedev.image_processors.raw_processor import RawProcessor
-    from pyfishsensedev.image_rectifier import ImageRectifier
+    from pyfishsensedev.image.image_rectifier import ImageRectifier
 
     raw_processor = RawProcessor()
     raw_processor_dark = RawProcessor(enable_histogram_equalization=False)
