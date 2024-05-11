@@ -21,12 +21,18 @@ pandas = "^2.2.1"
 numpy = "^1.26.4"
 numba = "^0.59.0"
 
-[tool.poetry.dev-dependencies]
-black = "^24.3.0"
-
 [tool.poetry.group.dev.dependencies]
+black = "^24.3.0"
 ipykernel = "^6.27.1"
+pytest = "^8.2.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "8.2"
+#addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
