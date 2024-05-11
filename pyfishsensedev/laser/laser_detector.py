@@ -8,6 +8,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from skimage.feature import peak_local_max
 
+from pyfishsensedev.laser.calibration.laser_calibration import LaserCalibration
 from pyfishsensedev.library.array_read_write import (
     read_camera_calibration,
     read_laser_calibration,
@@ -45,7 +46,7 @@ class LaserDetector:
     def __init__(
         self,
         lens_calibration_path: Path,
-        laser_calibration_path: Path,
+        laser_calibration: LaserCalibration,
         device: str,
         model_weights_path: Path = None,
     ):
@@ -57,9 +58,8 @@ class LaserDetector:
         self.calibration_matrix, self.distortion_coeffs = read_camera_calibration(
             lens_calibration_path.as_posix()
         )
-        self.laser_position, self.laser_orientation = read_laser_calibration(
-            laser_calibration_path.as_posix()
-        )
+        self.laser_calibration = laser_calibration
+
         self.model = LaserDetectorNetwork()
         self.model.load_state_dict(
             torch.load(model_weights_path.as_posix(), map_location=device)
@@ -91,8 +91,14 @@ class LaserDetector:
         return (x1, y1), (x2, y2)
 
     def _return_line(self) -> Tuple[Tuple[int, int], Tuple[int, int]]:
-        first_point = self.laser_position + 1 * self.laser_orientation
-        second_point = self.laser_position + 10000 * self.laser_orientation
+        first_point = (
+            self.laser_calibration.laser_position
+            + 1 * self.laser_calibration.laser_orientation
+        )
+        second_point = (
+            self.laser_calibration.laser_position
+            + 10000 * self.laser_calibration.laser_orientation
+        )
 
         first_2d = self._get_2d_from_3d(first_point)
         second_2d = self._get_2d_from_3d(second_point)
@@ -208,7 +214,7 @@ class LaserDetector:
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
-    from pyfishsensedev.image_processors.raw_processor import RawProcessor
+    from pyfishsensedev.image.image_processors.raw_processor import RawProcessor
     from pyfishsensedev.image.image_rectifier import ImageRectifier
 
     raw_processor = RawProcessor()
