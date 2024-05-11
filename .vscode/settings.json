@@ -17,4 +17,5 @@
         "--profile",
         "black"
     ],
+    "python.testing.pytestEnabled": true,
 }
