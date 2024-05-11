@@ -21,11 +21,10 @@ pandas = "^2.2.1"
 numpy = "^1.26.4"
 numba = "^0.59.0"
 
-[tool.poetry.dev-dependencies]
-black = "^24.3.0"
-
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.27.1"
+black = "^24.3.0"
+pytest = "^8.2.0"
 
 [build-system]
 requires = ["poetry-core"]
