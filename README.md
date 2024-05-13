@@ -1,6 +1,10 @@
 # Fishsense Lite Python Pipeline
 This repository contains a Python implementation of the Fishsense lite pipeline. It contains tools for camera calibration, laser calibration, and fish length calculation. This pipeline assumes that you already have access to all the data necessary to run this pipeline. As this code is meant to be a temporary measure, the user may need to edit some file paths, so apologies in advance. 
 
+## After cloning
+1. Install `git annex`.  On Ubuntu, execute `sudo apt install git-annex`.
+2. 
+
 ## Steps to use
 1. Run `poetry install`. This will install all required dependencies.
 2. Run `poetry shell` to execute all following commands within the poetry environment.
