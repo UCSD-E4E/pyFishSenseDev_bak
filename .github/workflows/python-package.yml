@@ -40,7 +40,7 @@ jobs:
       env:
         NAS_CREDS: ${{ secrets.NAS_CREDS }}
       run: |
-        ls tests/data
+        rm -rf tests/data
         poetry run python tests/tests_setup.py
         ls tests/data
     - name: Test with pytest
