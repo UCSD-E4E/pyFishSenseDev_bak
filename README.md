@@ -3,7 +3,7 @@ This repository contains a Python implementation of the Fishsense lite pipeline.
 
 ## After cloning
 1. Install `git annex`.  On Ubuntu, execute `sudo apt install git-annex`.
-2. 
+2. Install `git-annex-remote-synology` from [git-annex-remote-synology](https://github.com/UCSD-E4E/git-annex-remote-synology)
 
 ## Steps to use
 1. Run `poetry install`. This will install all required dependencies.
