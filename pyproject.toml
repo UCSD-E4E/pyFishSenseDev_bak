@@ -25,6 +25,7 @@ numba = "^0.59.0"
 black = "^24.3.0"
 ipykernel = "^6.27.1"
 pytest = "^8.2.0"
+nas-unzip = {git = "https://github.com/UCSD-E4E/synology-download.git"}
 
 [build-system]
 requires = ["poetry-core"]

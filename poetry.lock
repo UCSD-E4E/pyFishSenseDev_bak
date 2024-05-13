@@ -1063,6 +1063,24 @@ files = [
 ]
 
 [[package]]
+name = "nas-unzip"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = "^3.8"
+files = []
+develop = false
+
+[package.dependencies]
+synology-api = "0.5.1"
+
+[package.source]
+type = "git"
+url = "https://github.com/UCSD-E4E/synology-download.git"
+reference = "HEAD"
+resolved_reference = "1989d2f2b8f74167140c2e4e432f958ba67e2165"
+
+[[package]]
 name = "nest-asyncio"
 version = "1.6.0"
 description = "Patch asyncio to allow nested event loops"
@@ -2035,6 +2053,22 @@ doc = ["jupyterlite-pyodide-kernel", "jupyterlite-sphinx (>=0.12.0)", "jupytext"
 test = ["array-api-strict", "asv", "gmpy2", "hypothesis (>=6.30)", "mpmath", "pooch", "pytest", "pytest-cov", "pytest-timeout", "pytest-xdist", "scikit-umfpack", "threadpoolctl"]
 
 [[package]]
+name = "setuptools"
+version = "69.5.1"
+description = "Easily download, build, install, upgrade, and uninstall Python packages"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "setuptools-69.5.1-py3-none-any.whl", hash = "sha256:c636ac361bc47580504644275c9ad802c50415c7522212252c033bd15f301f32"},
+    {file = "setuptools-69.5.1.tar.gz", hash = "sha256:6c1fccdac05a97e598fb0ae3bbed5904ccb317337a51139dcd51453611bbb987"},
+]
+
+[package.extras]
+docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-favicon", "sphinx-inline-tabs", "sphinx-lint", "sphinx-notfound-page (>=1,<2)", "sphinx-reredirects", "sphinxcontrib-towncrier"]
+testing = ["build[virtualenv]", "filelock (>=3.4.0)", "importlib-metadata", "ini2toml[lite] (>=0.9)", "jaraco.develop (>=7.21)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "mypy (==1.9)", "packaging (>=23.2)", "pip (>=19.1)", "pytest (>=6,!=8.1.1)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-home (>=0.5)", "pytest-mypy", "pytest-perf", "pytest-ruff (>=0.2.1)", "pytest-timeout", "pytest-xdist (>=3)", "tomli", "tomli-w (>=1.0.0)", "virtualenv (>=13.0.0)", "wheel"]
+testing-integration = ["build[virtualenv] (>=1.0.3)", "filelock (>=3.4.0)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "packaging (>=23.2)", "pytest", "pytest-enabler", "pytest-xdist", "tomli", "virtualenv (>=13.0.0)", "wheel"]
+
+[[package]]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -2077,6 +2111,22 @@ files = [
 
 [package.dependencies]
 mpmath = ">=0.19"
+
+[[package]]
+name = "synology-api"
+version = "0.5.1"
+description = "Python Synology API Wrapper"
+optional = false
+python-versions = "*"
+files = [
+    {file = "synology-api-0.5.1.tar.gz", hash = "sha256:42b1bad32fdf4ec809be9b4ec80c530ae95b96c2318ffa2b86d475f77b5e54d8"},
+    {file = "synology_api-0.5.1-py3-none-any.whl", hash = "sha256:aef0ae05ab066be5a8e18a50c65316daabb9b057c1c872d906c8d5793ef9a86a"},
+]
+
+[package.dependencies]
+requests = "*"
+setuptools = "*"
+urllib3 = "*"
 
 [[package]]
 name = "tifffile"
@@ -2333,4 +2383,4 @@ test = ["pytest (>=6.0.0)", "setuptools (>=65)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "2c3bd72d785e930248ea2df5ed5c4d76a90d33e6b9bd89d3c62fef52e3676739"
+content-hash = "643cd014afcc4b3f88bde0e3da6c5a48e0315f0d0d18258f19654b7ac93a36f3"
