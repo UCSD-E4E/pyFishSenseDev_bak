@@ -216,3 +216,4 @@ data/
 *.pkg
 
 *.pth
+!tests/data
