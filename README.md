@@ -1,4 +1,4 @@
-# Fishsense Lite Python Pipeline
+# pyFishSenseDev [![Python package](https://github.com/UCSD-E4E/pyFishSenseDev/actions/workflows/python-package.yml/badge.svg)](https://github.com/UCSD-E4E/pyFishSenseDev/actions/workflows/python-package.yml)
 This repository contains a Python implementation of the Fishsense lite pipeline. It contains tools for camera calibration, laser calibration, and fish length calculation. This pipeline assumes that you already have access to all the data necessary to run this pipeline. As this code is meant to be a temporary measure, the user may need to edit some file paths, so apologies in advance. 
 
 ## After cloning
