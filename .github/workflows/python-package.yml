@@ -41,6 +41,7 @@ jobs:
         NAS_CREDS: ${{ secrets.NAS_CREDS }}
       run: |
         poetry run python tests/tests_setup.py
+        ls tests/data
     - name: Test with pytest
       run: |
         poetry run pytest
