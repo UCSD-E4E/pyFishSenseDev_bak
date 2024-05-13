@@ -216,3 +216,5 @@ data/
 *.pkg
 
 *.pth
+!tests/data
+tests/data/*.zip

@@ -1,6 +1,20 @@
 # Fishsense Lite Python Pipeline
 This repository contains a Python implementation of the Fishsense lite pipeline. It contains tools for camera calibration, laser calibration, and fish length calculation. This pipeline assumes that you already have access to all the data necessary to run this pipeline. As this code is meant to be a temporary measure, the user may need to edit some file paths, so apologies in advance. 
 
+## After cloning
+1. Install the `poetry` packages.  `poetry install`.
+2. Install `git annex`.  On Ubuntu, execute `sudo apt install git-annex`.
+3. Install `git-annex-remote-synology` from [git-annex-remote-synology](https://github.com/UCSD-E4E/git-annex-remote-synology).
+4. Run `git annex enableremote synology`.
+5. Download data `git annex copy --from=synology`.
+
+## Execute Unit Tests
+```
+poetry run pytest
+```
+
+
+# Old
 ## Steps to use
 1. Run `poetry install`. This will install all required dependencies.
 2. Run `poetry shell` to execute all following commands within the poetry environment.

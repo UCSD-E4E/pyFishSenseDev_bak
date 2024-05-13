@@ -5,9 +5,9 @@ from pyfishsensedev.fish.fish_segmentation_inference import FishSegmentationInfe
 
 
 def test_fishial_inference():
-    data = np.load("./tests/data/fish_test.npz")
-    img8 = data["arr_0"]
-    truth = data["arr_1"]
+    data = np.load("./tests/data/fish_segmentation.npz")
+    img8 = data["img8"]
+    truth = data["segmentations"]
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     fish_segmentation_interface = FishSegmentationInference(device)
