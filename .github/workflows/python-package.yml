@@ -42,6 +42,11 @@ jobs:
       run: |
         rm -rf tests/data
         poetry run python tests/tests_setup.py
+    - name: Generate ONNX Models
+      run: |
+        poetry run ./scripts/build_fishial_onnx_model.py
+        mkdir -p ./pyfishsensedev/fish/models
+        cp ./build/fishial.onnx ./pyfishsensedev/fish/models
     - name: Test with pytest
       run: |
         poetry run pytest
