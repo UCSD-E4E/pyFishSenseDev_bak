@@ -98,9 +98,9 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     import torch
 
-    from pyfishsensedev.fish_segmentation_inference import FishSegmentationInference
-    from pyfishsensedev.image_processors.raw_processor import RawProcessor
-    from pyfishsensedev.image.image_rectifier import ImageRectifier
+    from pyfishsensedev.fish import FishSegmentationFishialPyTorch
+    from pyfishsensedev.image import ImageRectifier
+    from pyfishsensedev.image.image_processors.raw_processor import RawProcessor
     from pyfishsensedev.laser.laser_detector import LaserDetector
 
     raw_processor = RawProcessor()
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     img_dark8 = ((img_dark.astype("float64") / 65535) * 255).astype("uint8")
     coords = laser_detector.find_laser(img_dark8)
 
-    fish_segmentation_inference = FishSegmentationInference(
+    fish_segmentation_inference = FishSegmentationFishialPyTorch(
         "cuda" if torch.cuda.is_available() else "cpu"
     )
     segmentations = fish_segmentation_inference.inference(img8)

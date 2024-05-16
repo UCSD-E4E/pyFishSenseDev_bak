@@ -218,3 +218,5 @@ data/
 *.pth
 !tests/data
 tests/data/*.zip
+
+models/

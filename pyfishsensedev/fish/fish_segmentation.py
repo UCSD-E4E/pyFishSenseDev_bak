@@ -1,6 +1,9 @@
-from abc import ABC
+from abc import ABC, abstractmethod
+
+import numpy as np
 
 
 class FishSegmentation(ABC):
-    def __init__(self) -> None:
-        super().__init__()
+    @abstractmethod
+    def inference(self, img: np.ndarray) -> np.ndarray:
+        raise NotImplementedError
