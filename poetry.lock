@@ -1426,6 +1426,41 @@ protobuf = ">=3.20.2"
 reference = ["Pillow", "google-re2"]
 
 [[package]]
+name = "onnxoptimizer"
+version = "0.3.13"
+description = "Open Neural Network Exchange"
+optional = false
+python-versions = "*"
+files = [
+    {file = "onnxoptimizer-0.3.13-cp310-cp310-macosx_10_15_universal2.whl", hash = "sha256:019968dc02b37ab87588b67331f15719a9fcfc5de54de866dd7b02eaad68bdd5"},
+    {file = "onnxoptimizer-0.3.13-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:542b43b13c3b1b7b72aae2579a2d75ef68dcf0513231bb1cb2b5f3c8af838d87"},
+    {file = "onnxoptimizer-0.3.13-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:98716324135ac5505529423dbba5479273e6f46a0f895ac611a29ed8a6f79690"},
+    {file = "onnxoptimizer-0.3.13-cp310-cp310-win_amd64.whl", hash = "sha256:f34db9dc55a682d3e5e60f5e6ff62101410620d2b70bef41f6158481a9a0b5ec"},
+    {file = "onnxoptimizer-0.3.13-cp311-cp311-macosx_10_15_universal2.whl", hash = "sha256:dcd1c529cb3d285f1bc75480ebe198a43f6bcc84ad010386f6e2d7bcd3052501"},
+    {file = "onnxoptimizer-0.3.13-cp311-cp311-macosx_10_15_x86_64.whl", hash = "sha256:a65b2ff1d480f966f906fdc3731cd6a844762e0aae1876eeafb7586048d6be96"},
+    {file = "onnxoptimizer-0.3.13-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2f985cfef0fa2b7cf9ae64a36ca8dacb3e1861e31fa41fb85645cdbd73ccab6a"},
+    {file = "onnxoptimizer-0.3.13-cp311-cp311-win_amd64.whl", hash = "sha256:82e606024a6dce999a8586d1f4b6af2ec454f7c5fd69807672a79067017a4812"},
+    {file = "onnxoptimizer-0.3.13-cp37-cp37m-macosx_10_15_x86_64.whl", hash = "sha256:feb5fb749cb9b12602fef7bae034aaf9a36baa05d068fb3d991bbb758c0508bb"},
+    {file = "onnxoptimizer-0.3.13-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:917363d773f6b517a6edb97b9d1d64cd49dc12ee507d9daef04a443d2d8889a5"},
+    {file = "onnxoptimizer-0.3.13-cp37-cp37m-win_amd64.whl", hash = "sha256:f809f7ba336e6569e699b4e6741042ef71e8db30bb60a3380faae87c59d6118f"},
+    {file = "onnxoptimizer-0.3.13-cp38-cp38-macosx_10_15_universal2.whl", hash = "sha256:f6a93aa863e23e040b23822b783b5d9bc1bf3a2153909bcc68dd9cd61c824798"},
+    {file = "onnxoptimizer-0.3.13-cp38-cp38-macosx_10_15_x86_64.whl", hash = "sha256:ad02bd61d5731587bcecb4aef3ecde6d22fdb0a36c8a2fb6c9b78b6b3cf30e42"},
+    {file = "onnxoptimizer-0.3.13-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e3a08e7d3077830bbc99009442230547cae2e9f74682b4fffa42036b88ac49ea"},
+    {file = "onnxoptimizer-0.3.13-cp38-cp38-win_amd64.whl", hash = "sha256:3dc63c930db678d07cdd816618b6d990dadb572691c62576962c2aab995a0ba1"},
+    {file = "onnxoptimizer-0.3.13-cp39-cp39-macosx_10_15_universal2.whl", hash = "sha256:1949c259bc87a92680b1d4ee54813dc712a4328b4d4e140ec44c1739862baccc"},
+    {file = "onnxoptimizer-0.3.13-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:9c0516d96da47875e9a36d0c9689e2d3e6f72950d98425ccfeba793b6ba4f55e"},
+    {file = "onnxoptimizer-0.3.13-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2cfa79a41d2439c47e6675f19cc6bcd7dce5d5da492f9bcde71dc0eba739dea6"},
+    {file = "onnxoptimizer-0.3.13-cp39-cp39-win_amd64.whl", hash = "sha256:f97f454cc2602095e341219f5c1b828d1588351251e4a4108017fd132ac5590c"},
+    {file = "onnxoptimizer-0.3.13.tar.gz", hash = "sha256:e08b726e0d4577e51e529f36bc324bf11b7cff12852cf3eee081f05c8b8c6f33"},
+]
+
+[package.dependencies]
+onnx = "*"
+
+[package.extras]
+mypy = ["mypy (==0.600)"]
+
+[[package]]
 name = "onnxruntime-gpu"
 version = "1.17.1"
 description = "ONNX Runtime is a runtime accelerator for Machine Learning models"
@@ -2537,4 +2572,4 @@ test = ["pytest (>=6.0.0)", "setuptools (>=65)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "2eaef12ba21e5f23f5f93f2ca8573bcb5570498772ee4148eee67e0137a1dc9c"
+content-hash = "b0f470094db8eed7700bb30efbd02011708c5496b4dbc4c07d072d20f6b411b5"

@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 import onnx
+import onnxoptimizer
 import torch.onnx
 
 from pyfishsensedev.fish import FishSegmentationFishialPyTorch
@@ -9,6 +10,7 @@ from pyfishsensedev.fish import FishSegmentationFishialPyTorch
 
 def main():
     os.makedirs("./build", exist_ok=True)
+    onnx_file = "./build/fishial.onnx"
 
     data = np.load("./tests/data/fish_segmentation.npz")
     img = data["img8"]
@@ -19,10 +21,16 @@ def main():
     resized_img, _ = fish_segmentation._resize_img(img)
     tensor_img = torch.Tensor(resized_img.astype("float32").transpose(2, 0, 1))
 
-    torch.onnx.export(fish_segmentation.model, tensor_img, "./build/fishial.onnx")
+    torch.onnx.export(fish_segmentation.model, tensor_img, onnx_file)
 
-    onnx_model = onnx.load("./build/fishial.onnx")
+    onnx_model = onnx.load(onnx_file)
     onnx.checker.check_model(onnx_model)
+
+    passes = ["extract_constant_to_initializer", "eliminate_unused_initializer"]
+    optimized_model = onnxoptimizer.optimize(onnx_model, passes)
+    onnx.checker.check_model(onnx_model)
+
+    onnx.save(optimized_model, onnx_file)
 
 
 if __name__ == "__main__":
