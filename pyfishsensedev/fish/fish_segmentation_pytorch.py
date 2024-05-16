@@ -10,7 +10,7 @@ from torch.nn import functional as F
 
 
 # Adapted from https://github.com/fishial/fish-identification/blob/main/module/segmentation_package/interpreter_segm.py
-class FishSegmentationInference:
+class FishSegmentationPyTorch:
     MODEL_URL = (
         "https://storage.googleapis.com/fishial-ml-resources/segmentation_21_08_2023.ts"
     )
@@ -20,7 +20,7 @@ class FishSegmentationInference:
         self.device = device
 
         self.model_path = self.__download_file(
-            FishSegmentationInference.MODEL_URL, FishSegmentationInference.MODEL_PATH
+            FishSegmentationPyTorch.MODEL_URL, FishSegmentationPyTorch.MODEL_PATH
         ).as_posix()
         self.model = torch.jit.load(self.model_path).to(device).eval()
 
@@ -210,19 +210,3 @@ class FishSegmentationInference:
         )
 
         return complete_mask[:, :, 0]
-
-
-if __name__ == "__main__":
-    import cv2
-    import matplotlib.pyplot as plt
-    import torch
-
-    img = cv2.imread("./data/P7170081.JPG")
-
-    fish_segmentation_inference = FishSegmentationInference(
-        "cuda" if torch.cuda.is_available() else "cpu"
-    )
-    mask = fish_segmentation_inference.inference(img)
-
-    plt.imshow(mask)
-    plt.show()
