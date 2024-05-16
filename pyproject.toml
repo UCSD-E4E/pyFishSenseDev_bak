@@ -20,7 +20,7 @@ wheel = "^0.41.3"
 pandas = "^2.2.1"
 numpy = "^1.26.4"
 numba = "^0.59.0"
-onnxruntime = "^1.17.3"
+onnxruntime-gpu = "^1.17.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"
