@@ -8,9 +8,11 @@ from PIL import Image
 from requests import get
 from torch.nn import functional as F
 
+from pyfishsensedev.fish.fish_segmentation import FishSegmentation
+
 
 # Adapted from https://github.com/fishial/fish-identification/blob/main/module/segmentation_package/interpreter_segm.py
-class FishSegmentationPyTorch:
+class FishSegmentationFishialPyTorch(FishSegmentation):
     MODEL_URL = (
         "https://storage.googleapis.com/fishial-ml-resources/segmentation_21_08_2023.ts"
     )
@@ -20,7 +22,7 @@ class FishSegmentationPyTorch:
         self.device = device
 
         self.model_path = self.__download_file(
-            FishSegmentationPyTorch.MODEL_URL, FishSegmentationPyTorch.MODEL_PATH
+            FishSegmentationFishialPyTorch.MODEL_URL, FishSegmentationFishialPyTorch.MODEL_PATH
         ).as_posix()
         self.model = torch.jit.load(self.model_path).to(device).eval()
 
