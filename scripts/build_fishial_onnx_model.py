@@ -16,7 +16,7 @@ def main():
     fish_segmentation = FishSegmentationFishialPyTorch("cpu")
     fish_segmentation.model.eval()
 
-    resized_img = fish_segmentation._resize_img(img)
+    resized_img, _ = fish_segmentation._resize_img(img)
     tensor_img = torch.Tensor(resized_img.astype("float32").transpose(2, 0, 1))
 
     torch.onnx.export(fish_segmentation.model, tensor_img, "./build/fishial.onnx")
