@@ -1,13 +1,9 @@
 from pathlib import Path
 from typing import Iterable, Tuple
 
-import cv2
 import numpy as np
 import torch
 import torchvision  # Needed to load the *.ts torchscript model.
-from PIL import Image
-from requests import get
-from torch.nn import functional as F
 
 from pyfishsensedev.fish.fish_segmentation_fishial import FishSegmentationFishial
 
@@ -17,27 +13,17 @@ class FishSegmentationFishialPyTorch(FishSegmentationFishial):
     MODEL_URL = (
         "https://storage.googleapis.com/fishial-ml-resources/segmentation_21_08_2023.ts"
     )
-    MODEL_PATH = Path("./data/models/fishial.ts")
+    MODEL_PATH = Path(__file__).parent / "models" / "fishial.ts"
 
     def __init__(self, device: str):
         super().__init__()
         self.device = device
 
-        self.model_path = self.__download_file(
+        self.model_path = self._download_file(
             FishSegmentationFishialPyTorch.MODEL_URL,
             FishSegmentationFishialPyTorch.MODEL_PATH,
         ).as_posix()
         self.model = torch.jit.load(self.model_path).to(device).eval()
-
-    def __download_file(self, url: str, path: Path) -> Path:
-        if not path.exists():
-            path.parent.mkdir(parents=True, exist_ok=True)
-
-            response = get(url)
-            with path.open("wb") as file:
-                file.write(response.content)
-
-        return path.absolute()
 
     def unwarp_tensor(self, tensor: Iterable[torch.Tensor]) -> Tuple:
         return (t.cpu().numpy() for t in tensor)

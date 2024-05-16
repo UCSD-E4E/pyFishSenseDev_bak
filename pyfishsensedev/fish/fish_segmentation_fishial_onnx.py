@@ -9,15 +9,18 @@ from pyfishsensedev.fish.fish_segmentation_fishial import FishSegmentationFishia
 
 # Adapted from https://github.com/fishial/fish-identification/blob/main/module/segmentation_package/interpreter_segm.py
 class FishSegmentationFishialOnnx(FishSegmentationFishial):
+    MODEL_URL = "https://huggingface.co/ccrutchf/fishial/resolve/main/fishial.onnx?download=true"
+    MODEL_PATH = Path(__file__).parent / "models" / "fishial.onnx"
+
     def __init__(self) -> None:
         super().__init__()
 
-        parent = Path(__file__).parent
-        model_path = parent / "models" / "fishial.onnx"
+        self.model_path = self._download_file(
+            FishSegmentationFishialOnnx.MODEL_URL,
+            FishSegmentationFishialOnnx.MODEL_PATH,
+        ).as_posix()
 
-        self.ort_session = onnxruntime.InferenceSession(
-            model_path.absolute().as_posix()
-        )
+        self.ort_session = onnxruntime.InferenceSession(self.model_path)
 
     def unwarp_tensor(self, tensor: Tuple) -> Tuple:
         return tensor

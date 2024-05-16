@@ -1,9 +1,11 @@
 from abc import ABC, abstractmethod
+from pathlib import Path
 from typing import Iterable, List, Tuple
 
 import cv2
 import numpy as np
 from PIL import Image
+from requests import get
 
 from pyfishsensedev.fish.fish_segmentation import FishSegmentation
 
@@ -20,6 +22,16 @@ class FishSegmentationFishial(FishSegmentation, ABC):
     @abstractmethod
     def unwarp_tensor(self, tensor: Iterable) -> Tuple:
         raise NotImplementedError
+
+    def _download_file(self, url: str, path: Path) -> Path:
+        if not path.exists():
+            path.parent.mkdir(parents=True, exist_ok=True)
+
+            response = get(url)
+            with path.open("wb") as file:
+                file.write(response.content)
+
+        return path.absolute()
 
     def _resize_img(
         self, img: np.ndarray, interp_method=Image.BILINEAR
