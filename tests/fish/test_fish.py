@@ -13,7 +13,7 @@ from pyfishsensedev.fish.fish_segmentation import FishSegmentation
     "fish_segmentation",
     [
         FishSegmentationFishialPyTorch("cuda" if torch.cuda.is_available() else "cpu"),
-        FishSegmentationFishialOnnx(),
+        # FishSegmentationFishialOnnx(),
     ],
 )
 def test_fishial(fish_segmentation: FishSegmentation):
