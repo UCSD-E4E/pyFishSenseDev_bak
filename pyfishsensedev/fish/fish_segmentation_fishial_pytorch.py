@@ -13,7 +13,9 @@ class FishSegmentationFishialPyTorch(FishSegmentationFishial):
     MODEL_URL = (
         "https://storage.googleapis.com/fishial-ml-resources/segmentation_21_08_2023.ts"
     )
-    MODEL_PATH = Path(__file__).parent / "models" / "fishial.ts"
+    MODEL_PATH = (
+        FishSegmentationFishial._get_model_directory() / "models" / "fishial.ts"
+    )
 
     def __init__(self, device: str):
         super().__init__()

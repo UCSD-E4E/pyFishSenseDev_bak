@@ -10,7 +10,7 @@ from pyfishsensedev.fish.fish_segmentation_fishial import FishSegmentationFishia
 # Adapted from https://github.com/fishial/fish-identification/blob/main/module/segmentation_package/interpreter_segm.py
 class FishSegmentationFishialOnnx(FishSegmentationFishial):
     MODEL_URL = "https://huggingface.co/ccrutchf/fishial/resolve/main/fishial.onnx?download=true"
-    MODEL_PATH = Path(__file__).parent / "models" / "fishial.onnx"
+    MODEL_PATH = FishSegmentationFishial._get_model_directory() / "models" / "fishial.onnx"
 
     def __init__(self) -> None:
         super().__init__()

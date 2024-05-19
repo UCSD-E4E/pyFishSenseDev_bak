@@ -4,9 +4,11 @@ from typing import Iterable, List, Tuple
 
 import cv2
 import numpy as np
+from appdirs import user_cache_dir
 from PIL import Image
 from requests import get
 
+from pyfishsensedev import __version__
 from pyfishsensedev.fish.fish_segmentation import FishSegmentation
 
 
@@ -18,6 +20,15 @@ class FishSegmentationFishial(FishSegmentation, ABC):
     SCORE_THRESHOLD = 0.3
     MASK_THRESHOLD = 0.5
     NMS_THRESHOLD = 0.9
+
+    def _get_model_directory() -> Path:
+        return Path(
+            user_cache_dir(
+                appname="pyFishSenseDev",
+                appauthor="Engineers for Exploration",
+                version=__version__,
+            )
+        )
 
     @abstractmethod
     def unwarp_tensor(self, tensor: Iterable) -> Tuple:
