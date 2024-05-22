@@ -19,7 +19,6 @@ class FishSegmentationFishial(FishSegmentation, ABC):
 
     SCORE_THRESHOLD = 0.3
     MASK_THRESHOLD = 0.5
-    NMS_THRESHOLD = 0.9
 
     def _get_model_directory() -> Path:
         return Path(
@@ -186,8 +185,6 @@ class FishSegmentationFishial(FishSegmentation, ABC):
 
             # Threshold the mask converting to uint8 casuse opencv diesn't allow other type!
             np_mask = np.where(np_mask > self.MASK_THRESHOLD, 255, 0).astype(np.uint8)
-            crop_image = np_img_resized[y1 : y1 + mask_h, x1 : x1 + mask_w]
-            res = cv2.bitwise_and(crop_image, crop_image, mask=np_mask)
 
             # Find contours in the binary mask
             contours = bitmap_to_polygon(np_mask)
