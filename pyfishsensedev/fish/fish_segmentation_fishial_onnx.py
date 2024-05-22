@@ -10,7 +10,9 @@ from pyfishsensedev.fish.fish_segmentation_fishial import FishSegmentationFishia
 # Adapted from https://github.com/fishial/fish-identification/blob/main/module/segmentation_package/interpreter_segm.py
 class FishSegmentationFishialOnnx(FishSegmentationFishial):
     MODEL_URL = "https://huggingface.co/ccrutchf/fishial/resolve/main/fishial.onnx?download=true"
-    MODEL_PATH = FishSegmentationFishial._get_model_directory() / "models" / "fishial.onnx"
+    MODEL_PATH = (
+        FishSegmentationFishial._get_model_directory() / "models" / "fishial.onnx"
+    )
 
     def __init__(self) -> None:
         super().__init__()
@@ -35,8 +37,6 @@ class FishSegmentationFishialOnnx(FishSegmentationFishial):
         }
         ort_outs = self.ort_session.run(None, ort_inputs)
 
-        complete_mask = self._convert_output_to_mask_and_polygons(
-            ort_outs, resized_img, scales, img
-        )
+        complete_mask = self._convert_output_to_mask_and_polygons(ort_outs, scales, img)
 
         return complete_mask[:, :, 0]

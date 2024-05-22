@@ -78,7 +78,6 @@ class FishSegmentationFishial(FishSegmentation, ABC):
     def _convert_output_to_mask_and_polygons(
         self,
         mask_rcnn_output: Tuple,
-        np_img_resized: np.ndarray,
         scales: np.ndarray,
         img: np.ndarray,
     ) -> np.ndarray:

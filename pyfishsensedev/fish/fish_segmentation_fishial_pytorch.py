@@ -39,7 +39,7 @@ class FishSegmentationFishialPyTorch(FishSegmentationFishial):
 
         segm_output = self.model(tensor_img)
         complete_mask = self._convert_output_to_mask_and_polygons(
-            segm_output, resized_img, scales, img
+            segm_output, scales, img
         )
 
         return complete_mask[:, :, 0]
